@@ -1,11 +1,10 @@
 package com.example.board.dto;
 
-import com.example.board.entity.User;
-import org.hibernate.annotations.CreationTimestamp;
+import com.example.board.entity.Account;
 
 import java.sql.Timestamp;
 
-public class UserDTO {
+public class AccountDTO {
     private Long id;
     private String username;
     private String password;
@@ -13,11 +12,11 @@ public class UserDTO {
     private String role; //ROLE_USER, ROLE_ADMIN
     private Timestamp create_date;
     // 기본 생성자
-    public UserDTO() {
+    public AccountDTO() {
 
     }
     // 모든 필드를 매개변수로 받는 생성자
-    public UserDTO(Long id, String username, String password, String email, String role, Timestamp create_date) {
+    public AccountDTO(Long id, String username, String password, String email, String role, Timestamp create_date) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -74,15 +73,15 @@ public class UserDTO {
         this.create_date = create_date;
     }
 
-    public static UserDTO toUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setRole(user.getRole());
-        userDTO.setcreate_date(user.getCreate_date());
+    public static AccountDTO toUserDTO(Account account) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(account.getId());
+        accountDTO.setUsername(account.getUsername());
+        accountDTO.setPassword(account.getPassword());
+        accountDTO.setEmail(account.getEmail());
+        accountDTO.setRole(account.getRole());
+        accountDTO.setcreate_date(account.getCreate_date());
 
-        return userDTO;
+        return accountDTO;
     }
 }

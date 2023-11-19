@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.dto.UserDTO;
+import com.example.board.dto.AccountDTO;
 import com.example.board.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -35,10 +35,10 @@ public class UserLoginController {
 
     // 로그인 버튼 클릭 시
     @PostMapping("/login")
-    public String login(@ModelAttribute UserDTO userDTO, HttpSession session) {
-        System.out.println("입력한 username: " + userDTO.getUsername() + "\n" + "입력한 password: " + userDTO.getPassword());
+    public String login(@ModelAttribute AccountDTO accountDTO, HttpSession session) {
+        System.out.println("입력한 username: " + accountDTO.getUsername() + "\n" + "입력한 password: " + accountDTO.getPassword());
         // 로그인에서 username과 password가 맞는지 확인
-        UserDTO loginResult = userService.login(userDTO);
+        AccountDTO loginResult = userService.login(accountDTO);
         if (loginResult != null) {
             // login 성공
             session.setAttribute("loginUsername", loginResult.getUsername());
@@ -68,9 +68,9 @@ public class UserLoginController {
 
     // 회원가입 완료 버튼 클릭 시
     @PostMapping("/register")
-    public String registerUserAccount(@ModelAttribute("userDTO") UserDTO userDto) {
+    public String registerUserAccount(@ModelAttribute("userDTO") AccountDTO accountDto) {
 
-        userService.save(userDto);
+        userService.save(accountDto);
         return "redirect:/";
     }
 }

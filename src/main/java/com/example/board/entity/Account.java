@@ -8,7 +8,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Data // getter setter 자동으로 생성해줌
-public class User {
+@Table(name = "user")
+public class Account {
 
     @Id // 기본키
     @GeneratedValue(strategy = GenerationType.IDENTITY)
