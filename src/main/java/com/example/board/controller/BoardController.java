@@ -35,7 +35,7 @@ public class BoardController {
     // 메소드 매개변수인 BoardDTO 객체의 title, content 넣어줌
     public String boardWritePro(BoardDTO boardDTO) {
 
-        boardService.write(boardDTO);
+        boardService.writeBoard(boardDTO);
 
         return "redirect:/board/list";
     }
@@ -83,7 +83,7 @@ public class BoardController {
     @PostMapping("/{id}/edit_save")
     public String boardEditSave(@PathVariable Long id,
                                 @ModelAttribute("boardDTO") BoardDTO boardDTO) {
-        boardService.boardUpdate(id, boardDTO);
+        boardService.updateBoard(id, boardDTO);
 
         return "redirect:/board/list";
     }

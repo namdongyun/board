@@ -33,22 +33,6 @@ public class UserLoginController {
         return "Login/login"; // 로그인 페이지 경로 반환
     }
 
-    // 로그인 버튼 클릭 시
-    @PostMapping("/login")
-    public String login(@ModelAttribute AccountDTO accountDTO, HttpSession session) {
-        System.out.println("입력한 username: " + accountDTO.getUsername() + "\n" + "입력한 password: " + accountDTO.getPassword());
-        // 로그인에서 username과 password가 맞는지 확인
-        AccountDTO loginResult = userService.login(accountDTO);
-        if (loginResult != null) {
-            // login 성공
-            session.setAttribute("loginUsername", loginResult.getUsername());
-            return "board/boardList";
-        } else {
-            // login 실패
-            return "Login/login";
-        }
-    }
-
     // 로그아웃 기능
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
@@ -61,7 +45,7 @@ public class UserLoginController {
 
     // 회원가입 페이지 이동
     @GetMapping("/register")
-    public String register(Model model) {
+    public String register() {
 
         return "Login/register"; // 로그인 페이지 경로 반환
     }

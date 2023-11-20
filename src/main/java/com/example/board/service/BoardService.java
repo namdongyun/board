@@ -20,14 +20,14 @@ public class BoardService {
     }
 
     // 게시글 저장 처리
-    public Long write(BoardDTO boardDTO) {
+    public BoardDTO writeBoard(BoardDTO boardDTO) {
         Board board = new Board(); // 새로운 board (entity)객체 생성
         board.setTitle(boardDTO.getTitle());    // board 객체에 title 넣음
         board.setContent(boardDTO.getContent());// board 객체에 content 넣음
 
         boardRepository.save(board);    // db에 board 객체 저장 -> 알아서 바꿔주나
 
-        return board.getId();
+        return convertToDTO(board);
     }
         
     // 게시글 리스트 가져오기
@@ -58,7 +58,7 @@ public class BoardService {
 
     // 특정 게시글 수정
 
-    public void boardUpdate(Long id, BoardDTO boardDTO) {
+    public void updateBoard(Long id, BoardDTO boardDTO) {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         board.setTitle(boardDTO.getTitle());

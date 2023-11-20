@@ -28,22 +28,4 @@ public class UserService{
 
         accountRepository.save(account);
     }
-
-    public AccountDTO login(AccountDTO accountDTO) {
-        Optional<Account> byUsername = accountRepository.findByUsername(accountDTO.getUsername());
-        if (byUsername.isPresent()) {
-            // 조회 결과 있음
-            Account account = byUsername.get();
-            if (account.getPassword().equals(accountDTO.getPassword())) {
-                // 비밀번호 일치
-                // entity -> dto 변환
-                return AccountDTO.toUserDTO(account);
-            } else {
-                return null;
-            }
-        } else {
-            // 조회 결과 없음
-            return null;
-        }
-    }
 }

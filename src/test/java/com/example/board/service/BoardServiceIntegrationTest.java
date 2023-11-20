@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-public class BoardServiceDBTest {
+public class BoardServiceIntegrationTest {
 
     @Autowired private BoardService boardService;
     @Autowired private BoardRepository boardRepository;
@@ -27,7 +27,7 @@ public class BoardServiceDBTest {
         return board;
     }
 
-    // 서비스에 write() 테스트
+    // 서비스에 writeBoard() 테스트
     @Test
     public void 게시글_생성_테스트() {
         // given(준비)
@@ -36,7 +36,8 @@ public class BoardServiceDBTest {
         boardDTO.setContent("내용");
 
         // when(실행)
-        Long saveId = boardService.write(boardDTO);
+        BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO);
+        Long saveId = writtenBoardDTO.getId();
 
         // then(검증)
         // 반환된 saveId가 null이 아닌지 확인
