@@ -1,11 +1,18 @@
 package com.example.board.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -24,13 +31,18 @@ public class WebSecurityConfig {
                 .formLogin(form -> form
                         // 로그인 페이지 설정
                         .loginPage("/login")
-                        .defaultSuccessUrl("/board/list", true)
+                        .loginProcessingUrl("/api/login")
+                        .successHandler(((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }))
                         .permitAll()
                 )
                 .logout(logout -> logout
                         // 로그아웃 성공 시 리다이렉트할 페이지 설정
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutUrl("/api/logout")
+                        .logoutSuccessHandler(((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }))
                         .invalidateHttpSession(true) // 세션 무효화
                         .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제
                         .permitAll()
@@ -41,5 +53,12 @@ public class WebSecurityConfig {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler reactAppRedirectSuccessHandler() {
+        return (request, response, authentication) -> {
+            response.sendRedirect("/"); // React 앱의 루트 또는 다른 URL로 리다이렉트
+        };
     }
 }
