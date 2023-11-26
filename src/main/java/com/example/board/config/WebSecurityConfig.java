@@ -16,8 +16,8 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorize -> authorize
                         // 정적 자원과 로그인, 회원가입 페이지는 인증 없이 접근 허용
-                        .requestMatchers("/", "/register", "/resources/**", "/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자만 접근 가능한 URL
+                        .requestMatchers("/", "/register", "/static/**", "/login").permitAll()
                         // 그 외의 모든 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
@@ -29,7 +29,10 @@ public class WebSecurityConfig {
                 )
                 .logout(logout -> logout
                         // 로그아웃 성공 시 리다이렉트할 페이지 설정
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true) // 세션 무효화
+                        .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제
                         .permitAll()
                 );
         return http.getOrBuild();

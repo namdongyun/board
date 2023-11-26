@@ -1,24 +1,35 @@
 package com.example.board.service;
 
 import com.example.board.dto.BoardDTO;
+import com.example.board.entity.Account;
 import com.example.board.entity.Board;
+import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-public class BoardServiceTest {
+class BoardServiceTest {
 
     @Mock /* 실제 객체를 생성하지 않고 가짜(Mock) 객체를 생성합니다. */
     private BoardRepository boardRepository;
+
+    @Mock
+    private AccountRepository accountRepository;
 
     @InjectMocks /* Mock 객체를 주입해야 하는 대상을 지정합니다. BoardService에 boardRepository Mock 객체를 주입합니다. */
     private BoardService boardService;
@@ -35,19 +46,41 @@ public class BoardServiceTest {
     @Test
     void 글_저장_테스트() {
         // given(준비)
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("1111");
+
+        // Account 객체
+        Long account_id = 1L;
+        Account account = new Account();
+        account.setId(account_id);
+        account.setUsername("1111");
+        account.setPassword("1234");
+        account.setRole("USER");
+        account.setEmail("1@1");
+
+        // BoardDTO 객체
         BoardDTO boardDTO = new BoardDTO();
         boardDTO.setTitle("테스트 제목");
         boardDTO.setContent("테스트 내용");
-
+        boardDTO.setAccount_id(account_id);
+        
+        // Board 객체
         Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
+        board.setAccount(account);
+
+        // Account 조회를 위한 스텁 설정
+        when(accountRepository.findByUsername("1111")).thenReturn(Optional.of(account));
 
         /* boardRepository.save 메소드가 호출될 때 어떤 Board 클래스의 인스턴스가 인자로 주어지더라도,
          실제 boardRepository.save 메소드가 실행되지 않고 mock의 boardRepository.save 메소드를 사용해
          미리 정의된 board 객체를 결과로 반환하도록 설정합니다. */
         when(boardRepository.save(any(Board.class))).thenReturn(board);
-        System.out.println();
 
         // when(실행)
         BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO);
@@ -57,6 +90,9 @@ public class BoardServiceTest {
         assertNotNull(writtenBoardDTO.getTitle());
         assertNotNull(writtenBoardDTO.getContent());
 
+        // 반환된 DTO의 사용자 ID가 기대한 ID와 일치하는지 검증
+        assertEquals(account_id, writtenBoardDTO.getAccount_id());
+
         // 특정 메소드가 호출되었는지, 몇 번 호출되었는지, 어떤 매개변수로 호출되었는지 등을 검증할 때 사용합니다
         // 테스트가 실패하면 해당 오류 메시지를 알려줌
         verify(boardRepository).save(any(Board.class));
@@ -64,28 +100,37 @@ public class BoardServiceTest {
 
     @Test
     void 글_목록_불러오기_테스트() {
-        // given
-        Long id = 1L;
-        Board board = new Board();
+        // given(준비)
+        // Account 객체
+        Long account_id = 100L; // 가정된 사용자 ID
+        String account_username = "username";
+        Account account = new Account();
+        account.setId(account_id);
+        account.setUsername(account_username);
 
-        board.setId(id);
+        // Board 객체
+        Long board_Id = 1L;
+        Board board = new Board();
+        board.setId(board_Id);
         board.setTitle("테스트 제목");
         board.setContent("테스트 내용");
+        board.setAccount(account); // Board 엔티티에 Account 설정
 
-        // 위에서 생성한 Board 객체를 담은 Optional을 반환하도록 Mockito를 사용하여 스텁을 설정
-        // findById 메소드는 일반적으로 결과가 없을 경우를 대비하여 결과를 Optional로 감싸서 반환하는 것이 일반적입니다.
-        when(boardRepository.findById(id)).thenReturn(Optional.of(board));
+        List<Board> boardList = Collections.singletonList(board); // 단일 Board 객체를 포함하는 리스트 생성
 
-        // when
-        BoardDTO boardDTO = boardService.loadBoardView(id);
+        // boardRepository.findAll 메소드가 호출되면, 가정된 boardList를 반환하도록 설정
+        when(boardRepository.findAll()).thenReturn(boardList);
 
-        // then
-        assertNotNull(boardDTO);
+        // when(실행)
+        List<BoardDTO> boardDTOList = boardService.getBoardDTOList();
 
-        // BoardDTO의 ID가 기대한 ID와 일치하는지 검증합니다.
-        assertEquals(id, boardDTO.getId());
-        assertEquals("테스트 제목", boardDTO.getTitle());
-        assertEquals("테스트 내용", boardDTO.getContent());
+        // then(검증)
+        assertFalse(boardDTOList.isEmpty()); // 반환된 리스트가 비어있지 않은지 확인
+        assertEquals(board.getId(), boardDTOList.get(0).getId()); // 리스트의 첫 번째 요소의 Id 검증
+        assertEquals(board.getTitle(), boardDTOList.get(0).getTitle()); // 리스트의 첫 번째 요소의 제목 검증
+        assertEquals(board.getContent(), boardDTOList.get(0).getContent()); // 리스트의 첫 번째 요소의 내용 검증
+        assertEquals(account_id, boardDTOList.get(0).getAccount_id()); // 리스트의 첫 번째 요소의 account_id 검증
+        assertEquals(account_username, boardDTOList.get(0).getAccount_username()); // 리스트의 첫 번째 요소의 account_username 검증
     }
 
     @Test

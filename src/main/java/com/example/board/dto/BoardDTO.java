@@ -4,6 +4,8 @@ public class BoardDTO {
     private Long id;
     private String title;
     private String content;
+    private Long account_id;
+    private String account_username;
 
     public Long getId() {
         return id;
@@ -27,5 +29,21 @@ public class BoardDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getAccount_id() {
+        return account_id;
+    }
+
+    public void setAccount_id(Long account_id) {
+        this.account_id = account_id;
+    }
+
+    public String getAccount_username() {
+        return account_username;
+    }
+
+    public void setAccount_username(String account_username) {
+        this.account_username = account_username;
     }
 }

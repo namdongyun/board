@@ -11,13 +11,15 @@
             <thead>
                 <tr>
                     <th>글 번호</th>
+                    <th>유저 이름</th>
                     <th>제목</th>
                     <th>내용</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="board_ : ${list}">
-                    <td th:text="${board_.id}">1</td>
+                    <td th:text="${board_.id}">id</td>
+                    <td th:text="${board_.getAccount_username()}" >username</td>
                     <td>
                         <a th:text="${board_.title}" th:href="@{/board/view(id=${board_.id})}">
                             제목

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-public class BoardServiceIntegrationTest {
+class BoardServiceIntegrationTest {
 
     @Autowired private BoardService boardService;
     @Autowired private BoardRepository boardRepository;
