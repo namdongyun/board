@@ -5,11 +5,14 @@ import {useNavigate} from "react-router-dom";
 function LoginPage(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    // 경로 이동 함수
     const navigate = useNavigate();
 
-    const handleSubmit = async (event) => {
+    const login = async (event) => {
         event.preventDefault(); // 폼 제출 시 브라우저가 자동으로 페이지를 새로고침하는 것을 막습니다.
 
+        // application/x-www-form-urlencoded 형식으로 바꿔주기 위함
         const formData = new URLSearchParams();
         formData.append('username', username);
         formData.append('password', password);
@@ -24,8 +27,8 @@ function LoginPage(props) {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-            console.log(response.data);
-            navigate('/');
+            console.log(`로그인 성공 : ${response.data}`);
+            window.location.href = '/';
         } catch (error){
             console.log(`로그인 실패 : ${error}`);
         }
@@ -35,7 +38,7 @@ function LoginPage(props) {
         <div>
             <h1>로그인 페이지</h1>
             {/* 폼 제출시 함수 실행 */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={login}>
                 <input
                     type="text"
                     name="username"

@@ -54,11 +54,4 @@ public class WebSecurityConfig {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public AuthenticationSuccessHandler reactAppRedirectSuccessHandler() {
-        return (request, response, authentication) -> {
-            response.sendRedirect("/"); // React 앱의 루트 또는 다른 URL로 리다이렉트
-        };
-    }
 }
