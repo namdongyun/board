@@ -6,11 +6,13 @@ import BoardList from "./board/BoardList";
 import {AuthProvider} from "./login/AuthContext";
 import ProtectedRoute from "./login/ProtectedRoute";
 import BoardView from "./board/BoardView";
+import BoardWrite from "./board/BoardWrite";
+import BoardEdit from "./board/BoardEdit";
 
 function App() {
 
     const renderProtected = (Component) => (
-        <ProtectedRoute roles={['ADMIN', 'USER']}>
+        <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
             <Component />
         </ProtectedRoute>
     );
@@ -18,11 +20,13 @@ function App() {
     return (
         <AuthProvider>
             <Routes>
-                <Route path="/" element={<MainPage/>}/>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="/board/list" element={renderProtected(BoardList)}/>
-                <Route path="/board/view/:id" element={renderProtected(BoardView)}/>
+                <Route path="/" element={<MainPage/>} />
+                <Route path="/login" element={<LoginPage/>} />
+                <Route path="/register" element={<RegisterPage/>} />
+                <Route path="/board/list" element={renderProtected(BoardList)} />
+                <Route path="/board/view/:id" element={renderProtected(BoardView)} />
+                <Route path="/board/editPage/:id" element={renderProtected(BoardEdit)} />
+                <Route path="/board/write" element={renderProtected(BoardWrite)} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </AuthProvider>

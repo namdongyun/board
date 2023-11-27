@@ -34,6 +34,8 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:3.6.0'
 	// JUnit5와 함께 사용
 	testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
+
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 }
 
 tasks.named('bootBuildImage') {

@@ -28,12 +28,10 @@ public class BoardService {
     }
 
     // 게시글 저장 처리
-    public BoardDTO writeBoard(BoardDTO boardDTO) {
+    public BoardDTO writeBoard(BoardDTO boardDTO, Authentication authentication) {
 
-        // 현재 인증된 사용자의 Authentication 객체를 가져옵니다.
+        // 현재 인증된 사용자의 authentication 를 가져옵니다.
         // 이 객체는 현재 로그인한 사용자의 보안 관련 세부 정보를 포함하고 있습니다.
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
             throw new IllegalStateException("인증 정보가 없습니다.");
@@ -89,9 +87,25 @@ public class BoardService {
 
     // 특정 게시글 수정
 
-    public void updateBoard(Long id, BoardDTO boardDTO) {
+    public void updateBoard(Long id, BoardDTO boardDTO, Authentication authentication) {
+
+        // 현재 인증된 사용자의 authentication 를 가져옵니다.
+        // 이 객체는 현재 로그인한 사용자의 보안 관련 세부 정보를 포함하고 있습니다.
+
+        if (authentication == null) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+
+        // 현재 인증된 사용자의 username 을 문자열로 저장
+        String currentPrincipalName = authentication.getName();
+
+        // 사용자의 username 으로 Account 엔티티 조회
+        Account currentAccount = accountRepository.findByUsername(currentPrincipalName)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자 username 값을 불러올 수 없습니다."));
+
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         boardRepository.save(board);
@@ -118,6 +132,8 @@ public class BoardService {
         boardDTO.setContent(board.getContent());
         boardDTO.setAccount_id(board.getAccount().getId());
         boardDTO.setAccount_username(board.getAccount().getUsername());
+        boardDTO.setCreatedAt(board.getCreatedAt());
+        boardDTO.setUpdatedAt(board.getUpdatedAt());
 
         return boardDTO;
     }

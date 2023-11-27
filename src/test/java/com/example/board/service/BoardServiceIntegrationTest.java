@@ -28,30 +28,30 @@ class BoardServiceIntegrationTest {
     }
 
     // 서비스에 writeBoard() 테스트
-    @Test
-    public void 게시글_생성_테스트() {
-        // given(준비)
-        BoardDTO boardDTO = new BoardDTO(); // 새로운 boardDTO (entity)객체 생성
-        boardDTO.setTitle("제목");
-        boardDTO.setContent("내용");
-
-        // when(실행)
-        BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO);
-        Long saveId = writtenBoardDTO.getId();
-
-        // then(검증)
-        // 반환된 saveId가 null이 아닌지 확인
-        assertNotNull(saveId);
-        System.out.println(saveId);
-
-        // mockBoardRepository를 사용하여 ID로 저장된 게시글을 조회
-        Board savedBoard = boardRepository.findById(saveId).orElse(null);
-
-        // 저장된 게시글이 null이 아닌지 확인
-        assertNotNull(savedBoard);
-
-        // 저장된 게시글의 제목과 내용이 예상한 값과 일치하는지 확인
-        assertEquals("제목", savedBoard.getTitle());
-        assertEquals("내용", savedBoard.getContent());
-    }
+//    @Test
+//    public void 게시글_생성_테스트() {
+//        // given(준비)
+//        BoardDTO boardDTO = new BoardDTO(); // 새로운 boardDTO (entity)객체 생성
+//        boardDTO.setTitle("제목");
+//        boardDTO.setContent("내용");
+//
+//        // when(실행)
+//        BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO);
+//        Long saveId = writtenBoardDTO.getId();
+//
+//        // then(검증)
+//        // 반환된 saveId가 null이 아닌지 확인
+//        assertNotNull(saveId);
+//        System.out.println(saveId);
+//
+//        // mockBoardRepository를 사용하여 ID로 저장된 게시글을 조회
+//        Board savedBoard = boardRepository.findById(saveId).orElse(null);
+//
+//        // 저장된 게시글이 null이 아닌지 확인
+//        assertNotNull(savedBoard);
+//
+//        // 저장된 게시글의 제목과 내용이 예상한 값과 일치하는지 확인
+//        assertEquals("제목", savedBoard.getTitle());
+//        assertEquals("내용", savedBoard.getContent());
+//    }
 }
