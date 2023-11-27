@@ -90,16 +90,19 @@ function BoardList(props) {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/board/list')
-            .then(response => {
-                setPosts(response.data)
+        const fetchPosts = async () => {
+            axios.get('/api/board/list')
+                .then(response => {
+                    setPosts(response.data)
 
-                console.log('글 리스트 불러오기 성공: ', response.data)
-            })
-            .catch(error => {
-                // 에러 처리
-                console.error('글 리스트 불러오는 중 오류 발생:', error.response || error);
-            });
+                    console.log('글 리스트 불러오기 성공: ', response.data)
+                })
+                .catch(error => {
+                    // 에러 처리
+                    console.error('글 리스트 불러오는 중 오류 발생:', error.response || error);
+                });
+        }
+        fetchPosts(); // 함수 호출
     }, []);
 
     return (

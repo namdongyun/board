@@ -53,7 +53,7 @@ function MainPage(props) {
 
     return (
         <Container>
-            <h1>로그인 해야지 게시판 들어갈 수 있음요</h1>
+            <h1>로그인 해야지 게시글 작성 가능</h1>
             <h1>회원가입 하세요</h1>
             <Button onClick={() => navigate('/board/list')}>
                 게시판 리스트 페이지 이동

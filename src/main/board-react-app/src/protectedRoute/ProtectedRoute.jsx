@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {AuthContext} from "./AuthContext";
+import {AuthContext} from "../login/AuthContext";
 import {Navigate, useLocation} from "react-router-dom";
 
 // 특정 사용자 역할에 따라 접근을 제한하는 라우팅 경로를 설정하는 데 사용됩니다.

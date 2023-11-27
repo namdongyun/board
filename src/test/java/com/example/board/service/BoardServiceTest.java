@@ -83,7 +83,7 @@ class BoardServiceTest {
         when(boardRepository.save(any(Board.class))).thenReturn(board);
 
         // when(실행)
-        BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO);
+        BoardDTO writtenBoardDTO = boardService.writeBoard(boardDTO, authentication);
 
         // then(검증)
         // 반환된 ID가 null이 아닌지 확인합니다.
@@ -136,6 +136,20 @@ class BoardServiceTest {
     @Test
     void 글_수정_테스트() {
         //given
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("1111");
+
+        Long account_id = 100L; // 가정된 사용자 ID
+        String account_username = "1111";
+
+        Account account = new Account();
+        account.setId(account_id);
+        account.setUsername(account_username);
+
         Long id = 1L;
 
         // 업데이트 될 정보를 가지고 있는 boardDTO 객체
@@ -150,11 +164,14 @@ class BoardServiceTest {
         beforeBoard.setTitle("테스트 제목");
         beforeBoard.setContent("테스트 내용");
 
-        // boardRepository.findById(id) 메소드 반환 값 Optional 객체로 설정
+        // boardRepository.findById 메소드가 호출될 때, id 값을 넣고 Optional<Board> 반환하도록 설정
         when(boardRepository.findById(id)).thenReturn(Optional.of(beforeBoard));
 
+        // AccountRepository의 findByUsername 메소드가 호출될 때, account_username 값을 넣고 Optional<Account> 반환하도록 설정
+        when(accountRepository.findByUsername(account_username)).thenReturn(Optional.of(account));
+
         //when
-        boardService.updateBoard(id, boardDTO);
+        boardService.updateBoard(id, boardDTO, authentication);
 
         //then
         assertEquals("수정된 제목", beforeBoard.getTitle());

@@ -86,7 +86,6 @@ public class BoardService {
     }
 
     // 특정 게시글 수정
-
     public void updateBoard(Long id, BoardDTO boardDTO, Authentication authentication) {
 
         // 현재 인증된 사용자의 authentication 를 가져옵니다.
