@@ -45,3 +45,10 @@ const handleLogout = async () => {
         }
     }
 ```
+
+Login 구현에서 username과 password를 Spring 서버로 넘겨줄 때 Spring security는 application/x-www-form-urlencoded 형식으로 받기 때문에 
+```js
+const formData = new URLSearchParams();
+        formData.append('username', username);
+        formData.append('password', password);
+```
