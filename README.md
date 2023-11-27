@@ -62,7 +62,7 @@ const response = await axios.post('/api/login', formData, {
             });
 ```
 이렇게 형식을 바꿔서 spring 서버로 넘겨줘야 합니다.
-
+<br/><br/>
 - WebSecurityConfig.java
 ```java
 .formLogin(form -> form
