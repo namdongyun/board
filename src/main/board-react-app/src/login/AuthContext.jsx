@@ -11,7 +11,6 @@ export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState({username: null, role: null});
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
-
     // 컴포넌트가 마운트될 때 서버로부터 사용자 프로필을 가져오는 side effect을 처리합니다.
 
     // withCredentials를 true로 설정하면,

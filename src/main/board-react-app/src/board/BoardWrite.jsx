@@ -53,25 +53,24 @@ function BoardWrite(props) {
         setContent(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    // 글 쓰기 완료
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const boardData = {title, content};
 
-        axios.post('/api/board/write', boardData, {
-            withCredentials: true
-        })
-            .then(response => {
-                // 게시글 작성 후 처리, 예를 들어 작성된 게시글로 라우팅하거나 메시지 표시
-                console.log('글 작성 처리 성공', response);
-
-                const postId = response.data.id;
-
-                navigate(`/board/View/${postId}`);
-            })
-            .catch(error => {
-                // 에러 처리
-                console.error('요청 처리 중 오류 발생', error.response || error);
+        try {
+            const response = await axios.post('/api/board/write', boardData, {
+                withCredentials: true
             });
+
+            console.log('글 작성 처리 성공', response);
+
+            const postId = response.data.id;
+
+            navigate(`/board/View/${postId}`);
+        } catch (error) {
+            console.error('요청 처리 중 오류 발생', error.response || error);
+        }
     };
 
     return (

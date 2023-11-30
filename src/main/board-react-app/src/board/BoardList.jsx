@@ -91,17 +91,14 @@ function BoardList(props) {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            axios.get('/api/board/list')
-                .then(response => {
-                    setPosts(response.data)
-
-                    console.log('글 리스트 불러오기 성공: ', response.data)
-                })
-                .catch(error => {
-                    // 에러 처리
-                    console.error('글 리스트 불러오는 중 오류 발생:', error.response || error);
-                });
-        }
+            try {
+                const response = await axios.get('/api/board/list');
+                setPosts(response.data);
+                console.log('글 리스트 불러오기 성공: ', response.data);
+            } catch (error) {
+                console.error('글 리스트 불러오는 중 오류 발생:', error.response || error);
+            }
+        };
         fetchPosts(); // 함수 호출
     }, []);
 
@@ -118,7 +115,14 @@ function BoardList(props) {
                     <PostItem key={post.id}>
                         <span>{post.account_username}</span> {/* 작성자 username 을 표시 */}
                         <PostTitle to={`/board/view/${post.id}`}>{post.title}</PostTitle>
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(post.createdAt).toLocaleString('ko-KR', {
+                            year: '2-digit', // 연도: 'numeric'(2019), '2-digit'(19)
+                            month: 'numeric', // 월: 'numeric'(12), '2-digit'(12), 'long'(12월), 'short'(12월), 'narrow'(12월)
+                            day: 'numeric', // 일: 'numeric'(31), '2-digit'(31)
+                            hour: 'numeric', // 시: 'numeric'(13), '2-digit'(13)
+                            minute: 'numeric', // 분: 'numeric'(9), '2-digit'(09)
+                            hour12: false, // 12시간제 여부: true(오전/오후), false(24시간제)
+                        })}</span>
                     </PostItem>
                 ))}
             </PostList>

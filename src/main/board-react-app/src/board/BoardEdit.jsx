@@ -45,15 +45,17 @@ function BoardEdit(props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 컴포넌트가 마운트될 때 기존 글의 내용을 불러옵니다.
-        axios.get(`/api/board/view/${id}`)
-            .then(response => {
+        const fetchLoadData = async () => {
+            try {
+                // 컴포넌트가 마운트될 때 기존 글의 내용을 불러옵니다.
+                const response = await axios.get(`/api/board/view/${id}`);
                 setTitle(response.data.title);
                 setContent(response.data.content);
-            })
-            .catch(error => {
+            } catch (error){
                 console.log('글 정보를 불러오는 중 오류 발생: ', error);
-            })
+            }
+        };
+        fetchLoadData();
     }, [id]);
 
     const handleTitleChange = (e) => {

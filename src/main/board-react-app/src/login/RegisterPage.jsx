@@ -68,7 +68,7 @@ function RegisterPage(props) {
         setEmail(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const accountDTO = {
@@ -77,16 +77,15 @@ function RegisterPage(props) {
             email
         };
 
-        axios.post('/api/register', accountDTO)
-            .then(response => {
-                // 회원가입 성공 시 처리
-                console.log('회원가입 성공:', response);
-                navigate('/');
-            })
-            .catch(error => {
-                // 회원가입 실패 시 처리
-                console.error('회원가입 실패:', error.response || error);
-            });
+        try {
+            const response = await axios.post('/api/register', accountDTO);
+            // 회원가입 성공 시 처리
+            console.log('회원가입 성공:', response);
+            navigate('/');
+        } catch (error) {
+            // 회원가입 실패 시 처리
+            console.error('회원가입 실패:', error.response || error);
+        }
     };
 
     return (

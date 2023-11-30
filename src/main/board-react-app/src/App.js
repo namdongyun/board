@@ -8,6 +8,8 @@ import ProtectedRoute from "./protectedRoute/ProtectedRoute";
 import BoardView from "./board/BoardView";
 import BoardWrite from "./board/BoardWrite";
 import BoardEdit from "./board/BoardEdit";
+import ChatComponent from "./chat/ChatComponent";
+import ChatComponent2 from "./chat/ChatComponent2";
 
 function App() {
 
@@ -27,6 +29,7 @@ function App() {
                 <Route path="/board/view/:id" element={<BoardView/>} />
                 <Route path="/board/editPage/:id" element={renderProtected(BoardEdit)} />
                 <Route path="/board/write" element={renderProtected(BoardWrite)} />
+                <Route path="/board/chat" element={<ChatComponent/>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </AuthProvider>

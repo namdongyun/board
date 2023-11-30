@@ -12,12 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -29,13 +25,13 @@ public class WebSecurityConfig {
                 .authorizeRequests(authorize -> authorize
                         // 정적 자원과 로그인, 회원가입 페이지는 인증 없이 접근 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자만 접근 가능한 URL
-                        .requestMatchers("/", "/api/register", "/static/**", "/api/login", "api/board/list", "api/board/view/**").permitAll()
+                        .requestMatchers("/", "/api/register", "/static/**", "api/login", "api/board/list",
+                                "api/board/view/**", "api", "/ws/**", "/error/**").permitAll()
                         // 그 외의 모든 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         // 로그인 페이지 설정
-                        .loginPage("/login")
                         .loginProcessingUrl("/api/login")
 
                         // 로그인에 성공했을 때 실행될 AuthenticationSuccessHandler를 정의합니다.
@@ -50,8 +46,7 @@ public class WebSecurityConfig {
                                 String role = "";
 
                                 // principal이 UserDetails 인스턴스라면, 사용자 이름과 권한 정보를 가져옵니다.
-                                if(principal instanceof UserDetails){
-                                    UserDetails userDetails = (UserDetails) principal;
+                                if(principal instanceof UserDetails userDetails){
                                     username = userDetails.getUsername();
                                     role = userDetails.getAuthorities().toString();
                                 }
