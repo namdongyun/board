@@ -1,37 +1,11 @@
-import {Route, Routes, Navigate} from "react-router-dom";
-import MainPage from "./login/MainPage";
-import LoginPage from "./login/LoginPage";
-import RegisterPage from "./login/RegisterPage";
-import BoardList from "./board/BoardList";
 import {AuthProvider} from "./login/AuthContext";
-import ProtectedRoute from "./protectedRoute/ProtectedRoute";
-import BoardView from "./board/BoardView";
-import BoardWrite from "./board/BoardWrite";
-import BoardEdit from "./board/BoardEdit";
-import ChatComponent from "./chat/ChatComponent";
-import ChatComponent2 from "./chat/ChatComponent2";
+import BoardHeader2 from "./header/BoardHeader2";
+import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
-
-    const renderProtected = (Component) => (
-        <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
-            <Component />
-        </ProtectedRoute>
-    );
-
     return (
         <AuthProvider>
-            <Routes>
-                <Route path="/" element={<MainPage/>} />
-                <Route path="/login" element={<LoginPage/>} />
-                <Route path="/register" element={<RegisterPage/>} />
-                <Route path="/board/list" element={<BoardList/>} />
-                <Route path="/board/view/:id" element={<BoardView/>} />
-                <Route path="/board/editPage/:id" element={renderProtected(BoardEdit)} />
-                <Route path="/board/write" element={renderProtected(BoardWrite)} />
-                <Route path="/board/chat" element={<ChatComponent/>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <BoardHeader2/>
         </AuthProvider>
     );
 }

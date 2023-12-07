@@ -74,6 +74,8 @@ public class ChatService {
         chatMessageDTO.setMessage(chatMessage.getMessage());
         chatMessageDTO.setTimestamp(chatMessage.getTimestamp());
         chatMessageDTO.setSenderId(chatMessage.getSender().getId());
+        chatMessageDTO.setSenderUsername(chatMessage.getSender().getUsername());
+        chatMessageDTO.setSenderNickname(chatMessage.getSender().getNickname());
 
         // 변환된 ChatMessageDTO 객체 반환
         return chatMessageDTO;
@@ -82,7 +84,11 @@ public class ChatService {
     // ChatMessageDTO -> ChatMessage 로 변환 메소드
     private ChatMessage convertToEntity(ChatMessageDTO chatMessageDTO) {
         // chatMessageDTO에 있는 senderId의 account 엔티티 객체를 찾아줍니다.
-        Account account = accountRepository.findById(chatMessageDTO.getSenderId())
+//        Account accountFindById = accountRepository.findById(chatMessageDTO.getSenderId())
+//                .orElseThrow(() -> new EntityNotFoundException("Account not found"));
+
+        // chatMessageDTO에 있는 senderUsername의 account 엔티티 객체를 찾아줍니다.
+        Account accountFindByUsername = accountRepository.findByUsername(chatMessageDTO.getSenderUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
         // ChatMessage 객체를 생성하고, ChatMessageDTO의 정보를 복사합니다.
@@ -90,8 +96,8 @@ public class ChatService {
 
         chatMessage.setChatRoomId(chatMessageDTO.getChatRoomId());
         chatMessage.setMessage(chatMessageDTO.getMessage());
-        chatMessage.setTimestamp(chatMessageDTO.getTimestamp());
-        chatMessage.setSender(account);
+//        chatMessage.setTimestamp(chatMessageDTO.getTimestamp());
+        chatMessage.setSender(accountFindByUsername);
 
         return chatMessage;
     }

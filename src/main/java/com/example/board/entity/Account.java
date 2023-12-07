@@ -19,7 +19,8 @@ public class Account {
     private String password;
     private String email;
     private String role; //ROLE_USER, ROLE_ADMIN
+    private String nickname;
 
     @CreationTimestamp
-    private Timestamp create_date;
+    private Timestamp createDate;
 }

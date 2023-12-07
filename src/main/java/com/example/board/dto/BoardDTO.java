@@ -1,65 +1,48 @@
 package com.example.board.dto;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class BoardDTO {
+
     private Long id;
     private String title;
     private String content;
-    private Long account_id;
-    private String account_username;
+    private Long accountId;
+    private String accountUsername;
+    private String accountNickname;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    public Long getId() {
-        return id;
-    }
 
+    // ----------getter setter 구현-------------------------------------
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    public Long getAccount_id() {
-        return account_id;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public void setAccount_id(Long account_id) {
-        this.account_id = account_id;
+    public void setAccountUsername(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
-    public String getAccount_username() {
-        return account_username;
-    }
-
-    public void setAccount_username(String account_username) {
-        this.account_username = account_username;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public void setAccountNickname(String accountNickname) {
+        this.accountNickname = accountNickname;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {

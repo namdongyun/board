@@ -11,26 +11,6 @@ export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState({username: null, role: null});
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
-    // 컴포넌트가 마운트될 때 서버로부터 사용자 프로필을 가져오는 side effect을 처리합니다.
-
-    // withCredentials를 true로 설정하면,
-    // 서버로 요청을 보낼 때 현재 가지고 있는 자격 증명 데이터를 포함해서 보냅니다.
-    // useEffect(() => {
-    //
-    //     axios.get('/account/profile', {withCredentials: true})
-    //
-    //         // 요청이 성공하면 응답으로부터 사용자 이름과 역할을 받아와서 auth 상태를 업데이트합니다.
-    //         .then(response => {
-    //             setAuth({
-    //                 username: response.data.username,
-    //                 role: response.data.role,
-    //             })
-    //         })
-    //         .catch(error => {
-    //             console.log('프로필 요청 중 오류가 발생했습니다.', error);
-    //         });
-    // }, []);
-
     // 컴포넌트가 처음 마운트될 때 로컬 스토리지에서 인증 정보를 가져와 상태에 설정하게 됩니다.
     useEffect(() => {
         const storedAuth = localStorage.getItem('auth');
@@ -62,9 +42,15 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem('auth');
     };
 
+    // 로그인 여부를 확인하는 함수입니다.
+    const isAuthenticated = () => {
+        return auth.username !== null;
+    };
+
+
     return (
         // auth 상태를 하위 컴포넌트에게 전달합니다.
-        <AuthContext.Provider value={{auth, login, logout, loading}}>
+        <AuthContext.Provider value={{auth, login, logout, loading, isAuthenticated}}>
             {children}
         </AuthContext.Provider>
     );

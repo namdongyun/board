@@ -52,6 +52,7 @@ function RegisterPage(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [nickname, setNickname] = useState('');
 
     // 경로 이동 함수
     const navigate = useNavigate();
@@ -68,13 +69,18 @@ function RegisterPage(props) {
         setEmail(e.target.value);
     };
 
+    const handleNicknameChange = (e) => { // 닉네임 변경 핸들러
+        setNickname(e.target.value);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const accountDTO = {
             username,
             password,
-            email
+            email,
+            nickname
         };
 
         try {
@@ -103,6 +109,10 @@ function RegisterPage(props) {
                 <div>
                     <Label>이메일:</Label>
                     <Input type="email" value={email} onChange={handleEmailChange} />
+                </div>
+                <div>
+                    <Label>닉네임:</Label>
+                    <Input type="text" value={nickname} onChange={handleNicknameChange} />
                 </div>
                 <SubmitButton type="submit">회원가입 완료</SubmitButton>
             </Form>

@@ -1,12 +1,12 @@
 package com.example.board.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class AdminController {
 
-    @GetMapping("/admin")
+    @GetMapping("api/admin")
     public String adminPage() {
         return "/admin/admin_page";
     }

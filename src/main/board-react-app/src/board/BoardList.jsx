@@ -2,134 +2,112 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
+import {
+    Button,
+    Pagination,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    Typography
+} from "@mui/material";
+import Box from "@mui/material/Box";
 
-const Container = styled.div`
-  padding: 20px;
-  max-width: 1000px;
-  margin: 40px auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background: #fff;
-`;
-
-const Title = styled.h1`
-  color: #333;
-  text-align: center;
-  margin-bottom: 30px;
-`;
-
-const PostList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
-const PostHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px; // PostItem과 동일한 패딩 값으로 설정
-  border-bottom: 2px solid #0366d6;
-  background-color: #f8f9fa;
-  font-weight: bold;
-`;
-
-const PostItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px; // PostHeader와 동일한 패딩 값으로 설정
-  border-bottom: 1px solid #eee;
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const PostTitle = styled(Link)`
-  text-decoration: none;
-  color: #0366d6;
-  font-size: 18px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const WriteButton = styled(Link)`
-  display: inline-block;
-  padding: 10px 15px;
-  margin-top: 20px;
-  background-color: #5cb85c;
-  color: white;
-  border-radius: 4px;
-  text-decoration: none;
-  text-align: center;
-
-  &:hover {
-    background-color: #4cae4c;
-  }
-`;
-
-const HomeButton = styled(Link)`
-  display: inline-block;
-  padding: 10px 15px;
-  margin-top: 20px;
-  background-color: #6c757d;
-  color: white;
-  border-radius: 4px;
-  text-decoration: none;
-  text-align: center;
-
-  &:hover {
-    background-color: #5a6268;
-  }
-`;
-
-function BoardList(props) {
+export default function BoardList() {
     const [posts, setPosts] = useState([]);
+    // 페이지네이션 상태
+    const [page, setPage] = useState(0); // 페이지 번호는 0부터 시작
+    const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('createdAt'); // 기본 정렬 필드
+    const rowsPerPage = 8; // 한 페이지에 표시할 게시글 수
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get('/api/board/list');
-                setPosts(response.data);
+                // 백엔드에서 페이징 처리된 데이터를 받아옵니다.
+                const response = await axios.get(`/api/board/list?page=${page}&size=${rowsPerPage}&sort=${orderBy},${order}`);
+                setPosts(response.data.content); // 현재 페이지의 게시글
+                setTotalPages(response.data.totalPages); // 전체 페이지 수 설정
+
                 console.log('글 리스트 불러오기 성공: ', response.data);
             } catch (error) {
                 console.error('글 리스트 불러오는 중 오류 발생:', error.response || error);
             }
         };
         fetchPosts(); // 함수 호출
-    }, []);
+    }, [page, order, orderBy]);
+
+    // 정렬 상태 변경 함수
+    const handleSortRequest = (cellId) => {
+        const isAsc = orderBy === cellId && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(cellId);
+    };
+
+    // 페이지네이션 상태 변경
+    const handleChange = (event, value) => {
+        // MUI Pagination 컴포넌트는 1부터 시작하지만 백엔드는 0부터 시작하므로 조정합니다.
+        setPage(value - 1);
+    };
 
     return (
-        <Container>
-            <Title>게시판</Title>
-            <PostHeader>
-                <span>작성자</span>
-                <span>제목</span>
-                <span>날짜</span>
-            </PostHeader>
-            <PostList>
-                {posts.map(post => (
-                    <PostItem key={post.id}>
-                        <span>{post.account_username}</span> {/* 작성자 username 을 표시 */}
-                        <PostTitle to={`/board/view/${post.id}`}>{post.title}</PostTitle>
-                        <span>{new Date(post.createdAt).toLocaleString('ko-KR', {
-                            year: '2-digit', // 연도: 'numeric'(2019), '2-digit'(19)
-                            month: 'numeric', // 월: 'numeric'(12), '2-digit'(12), 'long'(12월), 'short'(12월), 'narrow'(12월)
-                            day: 'numeric', // 일: 'numeric'(31), '2-digit'(31)
-                            hour: 'numeric', // 시: 'numeric'(13), '2-digit'(13)
-                            minute: 'numeric', // 분: 'numeric'(9), '2-digit'(09)
-                            hour12: false, // 12시간제 여부: true(오전/오후), false(24시간제)
-                        })}</span>
-                    </PostItem>
-                ))}
-            </PostList>
-            <WriteButton to={"/board/write"}>글쓰기</WriteButton >
-            <HomeButton to={"/"}>메인화면으로</HomeButton>
-        </Container>
+        <Box>
+            <Typography variant="h4" component="h1" gutterBottom>
+                게시판
+            </Typography>
+            {/* 글쓰기 버튼 */}
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button variant="contained" color="primary" component={Link}  to={`/board/write`}>
+                    글쓰기
+                </Button>
+            </Box>
+            <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>번호</TableCell>
+                            <TableCell onClick={() => handleSortRequest('title')}>제목</TableCell>
+                            <TableCell>작성자</TableCell>
+                            <TableCell onClick={() => handleSortRequest('createdAt')}>작성일</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {posts.map((post) => (
+                            <TableRow key={post.id} component={Link}  to={`/board/view/${post.id}`} hover style={{ textDecoration: 'none' }}>
+                                <TableCell component="th" scope="row">
+                                    {post.id}
+                                </TableCell>
+                                <TableCell>{post.title}</TableCell>
+                                <TableCell>{post.accountNickname}</TableCell>
+                                <TableCell>
+                                    {new Date(post.createdAt).toLocaleString('ko-KR', {
+                                                        year: '2-digit', // 연도: 'numeric'(2019), '2-digit'(19)
+                                                        month: 'numeric', // 월: 'numeric'(12), '2-digit'(12), 'long'(12월), 'short'(12월), 'narrow'(12월)
+                                                        day: 'numeric', // 일: 'numeric'(31), '2-digit'(31)
+                                                        hour: 'numeric', // 시: 'numeric'(13), '2-digit'(13)
+                                                        minute: 'numeric', // 분: 'numeric'(9), '2-digit'(09)
+                                                        hour12: false, // 12시간제 여부: true(오전/오후), false(24시간제)
+                                    })}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Box display="flex" justifyContent="center" my={2}>
+                <Pagination
+                    count={totalPages}
+                    page={page + 1} // MUI Pagination 컴포넌트는 1부터 시작하므로 조정합니다.
+                    onChange={handleChange}
+                    showFirstButton
+                    showLastButton
+                />
+            </Box>
+        </Box>
     );
 }
-
-export default BoardList;

@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from "sockjs-client";
 import styled from "styled-components";
+import {Link} from "react-router-dom";
 
 const ChatContainer = styled.div`
   padding: 20px;
@@ -16,13 +17,14 @@ const MessageList = styled.ul`
   padding: 0;
   height: 75%; // 메시지 리스트 높이를 조금 줄였습니다.
   overflow-y: auto;
+  font-weight: bold;
 `;
 
 const MessageItem = styled.li`
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 10px;
-  background-color: #f3f3f3;
+  background-color: blanchedalmond;
   &:last-child {
     margin-bottom: 0;
   }
@@ -49,11 +51,41 @@ const SendButton = styled.button`
   cursor: pointer;
 `;
 
+const BackButton = styled(Link)`
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #666;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background-color: #555;
+  }
+`;
+
+// 로딩 컴포넌트 스타일
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+`;
+
+// 로딩 컴포넌트
+const Loading = () => (
+    <LoadingContainer>
+        <p>로딩중...</p>
+    </LoadingContainer>
+);
+
 const ChatComponent = () => {
     const messagesEndRef = useRef(null); // 메시지 목록 컨테이너에 대한 ref 생성
     const stompClient = useRef(null);  // STOMP 클라이언트 인스턴스를 저장할 state 변수
     const [message, setMessage] = useState('');     // 사용자가 입력하는 메시지를 저장할 state 변수
     const [receivedMessages, setReceivedMessages] = useState([]); // 수신된 메시지들을 배열로 저장할 state 변수
+
+    const [isLoading, setIsLoading] = useState(true); // state 변수로 로딩 상태를 추가합니다.
 
     // 메시지 목록이 업데이트될 때마다 스크롤을 맨 아래로 이동시키는 함수
     const scrollToBottom = () => {
@@ -96,10 +128,13 @@ const ChatComponent = () => {
                 // React는 자동으로 현재 상태의 값을 prevMessages라는 이름의 매개변수로 해당 함수에 제공합니다.
 
                 // 이러한 방식은 상태 업데이트가 비동기적으로 일어날 때 최신 상태를 안전하게 얻기 위해 사용됩니다.
-                setReceivedMessages((prevMessages) =>
+                setReceivedMessages((prevMessages) => {
+                    console.log(JSON.parse(message.body));
+
+                    return [...prevMessages, JSON.parse(message.body)];
 
                     // 화살표 함수에서 중괄호 {}를 사용하지 않고 바로 값을 반환하는 경우에는 return 키워드를 생략할 수 있습니다.
-                    [...prevMessages, JSON.parse(message.body)]);
+                });
             });
 
             // 이전 대화 내역을 받기 위해 특정 주제(/topic/public)를 구독합니다.
@@ -113,6 +148,9 @@ const ChatComponent = () => {
                 destination: '/app/chat.history',
                 body: JSON.stringify({ chatRoomId: 'room1' }),
             });
+
+            // 연결 성공 후 로딩 상태를 변경합니다.
+            setIsLoading(false);
         };
 
         // STOMP 클라이언트를 활성화하여 연결을 시작합니다.
@@ -136,12 +174,15 @@ const ChatComponent = () => {
         // STOMP 클라이언트가 존재하는지 확인합니다.
         if (stompClient.current && message) {
 
+            const auth = JSON.parse(localStorage.getItem('auth'));
+            const senderUsername = auth ? auth.username : null; // 사용자 username이 없으면 null을 할당합니다.
+
             // 보낼 메시지 객체를 생성합니다. 여기에는 보내는 사람의 식별자, 메시지 텍스트, 그리고 현재 시간이 포함됩니다.
             const chatMessageDTO = {
                 chatRoomId: 'room1',
                 message: message, // 입력된 메시지 내용
-                timestamp: new Date(), // 현재 시간
-                senderId: 1 // 가정한 보내는 사람의 ID
+                // timestamp: new Date(), // 현재 시간
+                senderUsername: senderUsername // 가정한 보내는 사람의 ID
             };
 
             // STOMP 클라이언트의 publish 메서드를 사용하여 메시지를 전송합니다.
@@ -171,26 +212,55 @@ const ChatComponent = () => {
         }
     };
 
+    // 간단한 해시 함수로 문자열을 기반으로 색상 코드 생성
+    const stringToColor = (string) => {
+        let hash = 0;
+        for (let i = 0; i < string.length; i++) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let color = '#';
+        for (let i = 0; i < 3; i++) {
+            const value = (hash >> (i * 8)) & 0xFF;
+            color += ('00' + value.toString(16)).substr(-2);
+        }
+        return color;
+    };
+
+    // 메시지 아이템에 적용할 스타일을 반환하는 함수
+    const getMessageItemStyle = (nickname) => ({
+        backgroundColor: stringToColor(nickname), // 사용자 이름을 기반으로 색상 코드 생성
+        // 여기에 추가적인 스타일 속성을 넣을 수 있습니다.
+    });
+
     return (
-        <ChatContainer>
-            <MessageList>
-                {receivedMessages.map((msg) => (
-                    <MessageItem key={msg.id}>{msg.senderId}: {msg.message}</MessageItem>
-                ))}
-                {/* 가상의 요소를 추가하여 ref를 부여하고, 이 요소로 스크롤 위치를 조정합니다. */}
-                <div ref={messagesEndRef} />
-            </MessageList>
-            <InputContainer>
-                <MessageInput
-                    type="text"
-                    value={message}
-                    onChange={handleMessageChange}
-                    onKeyPress={handleKeyPress}
-                    placeholder="메시지를 입력하세요"
-                />
-                <SendButton onClick={handleSendMessage}>보내기</SendButton>
-            </InputContainer>
-        </ChatContainer>
+        isLoading ? (
+            <Loading />
+        ) : (
+            <ChatContainer>
+                <MessageList>
+                    {receivedMessages.map((msg) => (
+                        <MessageItem
+                            key={msg.id}
+                            style={getMessageItemStyle(msg.senderNickname)}
+                        >
+                            {msg.senderNickname}: {msg.message}
+                        </MessageItem>
+                    ))}
+                    {/* 가상의 요소를 추가하여 ref를 부여하고, 이 요소로 스크롤 위치를 조정합니다. */}
+                    <div ref={messagesEndRef} />
+                </MessageList>
+                <InputContainer>
+                    <MessageInput
+                        type="text"
+                        value={message}
+                        onChange={handleMessageChange}
+                        onKeyPress={handleKeyPress}
+                        placeholder="메시지를 입력하세요"
+                    />
+                    <SendButton onClick={handleSendMessage}>보내기</SendButton>
+                </InputContainer>
+            </ChatContainer>
+        )
     );
 };
 

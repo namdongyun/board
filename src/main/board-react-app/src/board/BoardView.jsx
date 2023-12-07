@@ -116,7 +116,7 @@ function BoardView() {
             return;
         }
         // 관리자 또는 글 작성자의 경우만 삭제를 가능하게 합니다.
-        if (currentUser.username !== boardView.account_username && currentUser.role !== 'ROLE_ADMIN'){
+        if (currentUser.username !== boardView.accountUsername && currentUser.role !== 'ROLE_ADMIN'){
             alert('게시글 삭제 권한이 없습니다.');
             return;
         }
@@ -141,7 +141,7 @@ function BoardView() {
             return;
         }
         // 관리자 또는 글 작성자의 경우만 수정을 가능하게 합니다.
-        if (currentUser.username !== boardView.account_username && currentUser.role !== 'ROLE_ADMIN'){
+        if (currentUser.username !== boardView.accountUsername && currentUser.role !== 'ROLE_ADMIN'){
             alert('게시글 수정 권한이 없습니다.');
             return;
         }

@@ -7,8 +7,11 @@ import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -56,17 +59,12 @@ public class BoardService {
         
     // 전체 게시글 불러오기
     // board 앤티티 객체를 가져와서 그 안에 있는 데이터를 하나하나 boardDTO에 넣어줌
-    public List<BoardDTO> getBoardDTOList() {
-        List<Board> boards = boardRepository.findAll();
+    public Page<BoardDTO> getBoardDTOList(Pageable pageable) {
 
-        List<BoardDTO> boardDTOs = new ArrayList<>();
+        Page<Board> boards = boardRepository.findAll(pageable);
 
-        // boards 리스트에서 한개씩 꺼내 -> board에 넣기 반복
-        for (Board board : boards) {
-            BoardDTO boardDTO = convertToDTO(board);
-            boardDTOs.add(boardDTO);
-        }
-        return boardDTOs;
+        // Entity를 DTO로 변환합니다.
+        return boards.map(this::convertToDTO);
     }
 
     // 특정 게시글 불러오기
@@ -126,13 +124,14 @@ public class BoardService {
     private BoardDTO convertToDTO(Board board) {
         BoardDTO boardDTO = new BoardDTO();
 
-        boardDTO.setId(board.getId());
-        boardDTO.setTitle(board.getTitle());
-        boardDTO.setContent(board.getContent());
-        boardDTO.setAccount_id(board.getAccount().getId());
-        boardDTO.setAccount_username(board.getAccount().getUsername());
-        boardDTO.setCreatedAt(board.getCreatedAt());
-        boardDTO.setUpdatedAt(board.getUpdatedAt());
+        boardDTO.setId(board.getId());  // 게시글 ID
+        boardDTO.setTitle(board.getTitle());    // 제목
+        boardDTO.setContent(board.getContent());    // 내용
+        boardDTO.setAccountId(board.getAccount().getId());  // 계정 ID(기본키)
+        boardDTO.setAccountUsername(board.getAccount().getUsername()); // 계정 로그인 username
+        boardDTO.setAccountNickname(board.getAccount().getNickname()); // 계정 nickname
+        boardDTO.setCreatedAt(board.getCreatedAt());    // 글 생성 날짜
+        boardDTO.setUpdatedAt(board.getUpdatedAt());    // 글 수정 날짜
 
         return boardDTO;
     }
@@ -141,7 +140,7 @@ public class BoardService {
     // BoardDTO -> Board
     private Board convertToEntity(BoardDTO boardDTO) {
         // boardDTO 객체에 있는 account_id 값을 이용해 account_id 값을 가지고 있는 account 엔티티 객체를 가져옴
-        Account account = accountRepository.findById(boardDTO.getAccount_id())
+        Account account = accountRepository.findById(boardDTO.getAccountId())
                 .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
         Board board = new Board();

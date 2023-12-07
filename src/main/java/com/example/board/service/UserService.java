@@ -19,11 +19,13 @@ public class UserService{
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    // 회원가입
     public void save(AccountDTO accountDto) {
         Account account = new Account();
         account.setUsername(accountDto.getUsername());
         account.setPassword(bCryptPasswordEncoder.encode(accountDto.getPassword()));
         account.setEmail(accountDto.getEmail());
+        account.setNickname(accountDto.getNickname());
         account.setRole("USER");
 
         accountRepository.save(account);

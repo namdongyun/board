@@ -31,7 +31,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        // 로그인 페이지 설정
+                        // 로그인 api 주소 설정
                         .loginProcessingUrl("/api/login")
 
                         // 로그인에 성공했을 때 실행될 AuthenticationSuccessHandler를 정의합니다.
@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        // 로그아웃 성공 시 리다이렉트할 페이지 설정
+                        // 로그아웃 api 주소 설정
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler(((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);

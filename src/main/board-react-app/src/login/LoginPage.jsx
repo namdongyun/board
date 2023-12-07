@@ -1,65 +1,11 @@
 import React, {useContext, useState} from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import {AuthContext} from "./AuthContext";
-
-// 스타일이 적용된 컨테이너
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f4f7f6;
-`;
-
-// 스타일이 적용된 로그인 박스
-const LoginBox = styled.div`
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  max-width: 400px;
-  width: 100%;
-`;
-
-// 스타일이 적용된 제목
-const Title = styled.h1`
-  font-size: 2em;
-  color: #333333;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-// 스타일이 적용된 입력 필드
-const Input = styled.input`
-  background-color: #e8eeef;
-  border: none;
-  padding: 15px;
-  margin-bottom: 20px;
-  width: calc(100% - 30px);
-  border-radius: 4px;
-  
-  &:focus {
-    outline: none;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-  }
-`;
-
-// 스타일이 적용된 버튼
-const Button = styled.button`
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  padding: 15px;
-  width: 100%;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #219653;
-  }
-`;
+import {Button, Checkbox, FormControlLabel, TextField, Link, Grid, Typography, Avatar, Container} from "@mui/material";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Box from "@mui/material/Box";
+import {useNavigate} from "react-router-dom";
 
 function LoginPage(props) {
     const [username, setUsername] = useState('');
@@ -88,7 +34,7 @@ function LoginPage(props) {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-            console.log('response 값 : ', response);
+            console.log('로그인 response 값 : ', response);
 
             // 서버로부터 받은 role 값에서 대괄호를 제거합니다.
             const roleWithoutBrackets = response.data.role.replace(/\[|\]/g, '');
@@ -104,27 +50,74 @@ function LoginPage(props) {
     };
 
     return (
-        <Container>
-            <LoginBox>
-                <Title>로그인</Title>
-                <form onSubmit={handleLogin}>
-                    <Input
-                        type="text"
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Sign in
+                </Typography>
+                <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Username"
                         name="username"
-                        placeholder="Username"
-                        value={username}
+                        autoComplete="username"
+                        autoFocus
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <Input
-                        type="password"
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
                         name="password"
-                        placeholder="Password"
-                        value={password}
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Button type="submit">Login</Button>
-                </form>
-            </LoginBox>
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2,
+                            backgroundColor: 'black',
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: '#424242',
+                            },}}
+                    >
+                        Sign In
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="#" variant="body2">
+                                Forgot password?
+                            </Link>
+                        </Grid>
+                        <Grid item>
+                            <Link href="/register" variant="body2">
+                                {"Don't have an account? Sign Up"}
+                            </Link>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Box>
         </Container>
     );
 }

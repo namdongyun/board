@@ -3,6 +3,8 @@ package com.example.board.controller;
 import com.example.board.dto.BoardDTO;
 import com.example.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +32,10 @@ public class BoardController {
 
     // 게시글 리스트 가져오기
     @GetMapping("/api/board/list")
-    public List<BoardDTO> boardList() {
+    public Page<BoardDTO> boardList(Pageable pageable) {
 
         // BoardService를 통해 boardDTOs(엔티티 -> DTO 변환된) 리스트를 React 서버로 보내줌
-        return boardService.getBoardDTOList(); 
+        return boardService.getBoardDTOList(pageable);
     }
 
     // 제목 누르면 나오는 게시글 상세 페이지
