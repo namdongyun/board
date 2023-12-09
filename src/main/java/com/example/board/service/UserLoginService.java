@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-public class UserService{
+public class UserLoginService {
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    public UserService(AccountRepository accountRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserLoginService(AccountRepository accountRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.accountRepository = accountRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }

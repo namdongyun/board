@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.mockito.Mockito.*;
 
-public class UserServiceTest {
+public class UserLoginServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
@@ -21,7 +21,7 @@ public class UserServiceTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @InjectMocks
-    private UserService userService;
+    private UserLoginService userLoginService;
 
     @BeforeEach
     void setUp() {
@@ -42,7 +42,7 @@ public class UserServiceTest {
                 .thenReturn("encryptedPassword");
 
         // when
-        userService.save(accountDTO);
+        userLoginService.save(accountDTO);
 
         // Then
         // accountRepository의 save 메소드가 정확히 한 번 호출되었는지 검증

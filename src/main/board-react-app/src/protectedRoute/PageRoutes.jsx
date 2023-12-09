@@ -9,6 +9,8 @@ import BoardEdit from "../board/BoardEdit";
 import BoardWrite from "../board/BoardWrite";
 import ChatComponent from "../chat/ChatComponent";
 import ProtectedRoute from "./ProtectedRoute";
+import MyPageAccessPage from "../mypage/MyPageAccessPage";
+import MyPage from "../mypage/MyPage";
 
 export default function PageRoutes() {
 
@@ -29,6 +31,7 @@ export default function PageRoutes() {
             <Route path="/board/editPage/:id" element={renderProtected(BoardEdit)} />
             <Route path="/board/write" element={renderProtected(BoardWrite)} />
             <Route path="/board/chat" element={renderProtected(ChatComponent)} />
+            <Route path="/mypage" element={renderProtected(MyPage)} />
 
 
             <Route path="*" element={<Navigate to="/" replace />} />

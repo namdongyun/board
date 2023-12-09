@@ -1,6 +1,5 @@
 import React, {useContext, useState} from "react";
 import axios from "axios";
-import styled from "styled-components";
 import {AuthContext} from "./AuthContext";
 import {Button, Checkbox, FormControlLabel, TextField, Link, Grid, Typography, Avatar, Container} from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -95,12 +94,7 @@ function LoginPage(props) {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2,
-                            backgroundColor: 'black',
-                            color: 'white',
-                            '&:hover': {
-                                backgroundColor: '#424242',
-                            },}}
+                        sx={{ mt: 3, mb: 2,}}
                     >
                         Sign In
                     </Button>

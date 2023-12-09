@@ -18,16 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ChatIcon from '@mui/icons-material/Chat';
 import ForumIcon from '@mui/icons-material/Forum';
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
-import MainPage from "../login/MainPage";
-import LoginPage from "../login/LoginPage";
-import RegisterPage from "../login/RegisterPage";
-import BoardList from "../board/BoardList";
-import BoardView from "../board/BoardView";
-import BoardEdit from "../board/BoardEdit";
-import BoardWrite from "../board/BoardWrite";
-import ChatComponent from "../chat/ChatComponent";
-import ProtectedRoute from "../protectedRoute/ProtectedRoute";
+import {useNavigate} from "react-router-dom";
 import {Button} from "@mui/material";
 import {useContext} from "react";
 import {AuthContext} from "../login/AuthContext";
@@ -153,7 +144,7 @@ export default function BoardHeader2() {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open} sx={
-                {backgroundColor: 'black'}
+                {backgroundColor: ''}
             }>
                 <Toolbar>
                     <IconButton
@@ -169,7 +160,7 @@ export default function BoardHeader2() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
-                        board
+                        누구세요
                     </Typography>
                     {!isAuthenticated() && (
                         <>
@@ -235,8 +226,29 @@ export default function BoardHeader2() {
                             <ListItemText primary="게시판" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
+                    <Divider />
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                            }}
+                            onClick={() => navigate('mypage')} // 여기에 클릭 이벤트를 추가합니다.
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <ForumIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="마이페이지" sx={{ opacity: open ? 1 : 0 }} />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
-                <Divider />
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
