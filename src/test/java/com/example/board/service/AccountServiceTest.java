@@ -11,12 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-class AccountServiceTest {
+class  AccountServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
@@ -90,5 +89,41 @@ class AccountServiceTest {
 
         // Assert
         assertFalse(result);
+    }
+
+    @Test
+    void 닉네임_변경_테스트_true일_때() {
+        // given
+        account.setNickname("oldNickname");
+
+        String username = "user";
+        String newNickname = "newNickname";
+
+        when(accountRepository.findByUsername(username)).thenReturn(Optional.of(account));
+
+        // when
+        boolean result = accountService.changeNickname(username, newNickname);
+
+        // then
+        assertTrue(result);
+        verify(accountRepository).save(account);
+        assertEquals(newNickname, account.getNickname());
+    }
+
+    @Test
+    void 닉네임_변경_테스트_해당_account를_찾을_수_없을_때() {
+        // given
+        String username = "nonExistingUser";
+        String newNickname = "newNickname";
+
+        when(accountRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        // when
+        boolean result = accountService.changeNickname(username, newNickname);
+
+        // then
+        assertFalse(result);
+        // accountRepository의 save 메소드가 Account 클래스의 인스턴스와 함께 단 한 번도 호출되지 않았음을 확인
+        verify(accountRepository, never()).save(any(Account.class));
     }
 }

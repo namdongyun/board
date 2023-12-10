@@ -47,4 +47,22 @@ public class AccountService {
         return false; // 사용자를 찾을 수 없거나 비밀번호 변경 실패
     }
 
+    // 닉네임 변경 메소드
+    public boolean changeNickname(String username, String newNickname) {
+        // 사용자 ID로 계정 정보를 찾습니다.
+        Account account = accountRepository.findByUsername(username).orElse(null);
+
+        if (account != null) {
+            // 새로운 닉네임으로 업데이트합니다.
+            account.setNickname(newNickname);
+
+            // 변경된 정보를 저장합니다.
+            accountRepository.save(account);
+
+            return true; // 닉네임 변경 성공
+        }
+
+        return false; // 사용자를 찾을 수 없거나 닉네임 변경 실패
+    }
+
 }

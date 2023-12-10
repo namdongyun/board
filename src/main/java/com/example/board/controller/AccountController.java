@@ -26,7 +26,19 @@ public class AccountController {
         if (isPasswordChanged) {
             return ResponseEntity.ok("비밀번호가 변경되었습니다.");
         } else {
-            return ResponseEntity.badRequest().body("비밀번호 변경에 실패하였습니다. 사용자 이름을 확인해주세요.");
+            return ResponseEntity.badRequest().body("비밀번호 변경에 실패하였습니다.");
+        }
+    }
+
+    // 닉네임 변경 요청 처리
+    @PostMapping("api/change-nickname")
+    public ResponseEntity<String> changeNickname(@RequestParam String username, @RequestParam String newNickname) {
+        boolean isChanged = accountService.changeNickname(username, newNickname);
+
+        if (isChanged) {
+            return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("닉네임 변경에 실패했습니다.");
         }
     }
 

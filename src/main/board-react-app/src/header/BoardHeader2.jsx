@@ -24,6 +24,7 @@ import {useContext} from "react";
 import {AuthContext} from "../login/AuthContext";
 import axios from "axios";
 import PageRoutes from "../protectedRoute/PageRoutes";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 // 사이드바 넓이를 240 픽셀로 설정
 const drawerWidth = 240;
@@ -243,7 +244,7 @@ export default function BoardHeader2() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <ForumIcon />
+                                <SettingsIcon />
                             </ListItemIcon>
                             <ListItemText primary="마이페이지" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
