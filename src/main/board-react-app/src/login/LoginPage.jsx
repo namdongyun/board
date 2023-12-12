@@ -18,28 +18,23 @@ function LoginPage(props) {
     const handleLogin = async (event) => {
         event.preventDefault(); // 폼 제출 시 브라우저가 자동으로 페이지를 새로고침하는 것을 막습니다.
 
-        // application/x-www-form-urlencoded 형식으로 바꿔주기 위함
-        const formData = new URLSearchParams();
-        formData.append('username', username);
-        formData.append('password', password);
+        const data = {
+            username: username,
+            password: password
+        }
 
         try {
             // Axios 라이브러리를 사용하여 서버의 /login 엔드포인트로 POST 요청을 보냅니다.
             // await 키워드는 해당 비동기 요청이 완료될 때까지 함수 실행을 일시 중지하고,
             // 요청이 성공적으로 완료되면 결과를 response 변수에 저장합니다.
-            const response = await axios.post('/api/login', formData, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            const response = await axios.post('/api/login', data);
             console.log('로그인 response 값 : ', response);
 
             // 서버로부터 받은 role 값에서 대괄호를 제거합니다.
-            const roleWithoutBrackets = response.data.role.replace(/\[|\]/g, '');
+            // const roleWithoutBrackets = response.data.role.replace(/\[|\]/g, '');
 
             // 로그인 성공 후, AuthProvider의 login 함수를 호출하여 상태를 업데이트합니다.
-            login(response.data.username, roleWithoutBrackets);
+            login(response.data);
 
             console.log('로그인 성공 : ', response.data);
             navigate('/'); // 홈페이지로 이동

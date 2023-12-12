@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from "sockjs-client";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
+import {AuthContext} from "../login/AuthContext";
 
 const ChatContainer = styled.div`
   padding: 20px;
@@ -80,11 +81,12 @@ const Loading = () => (
 );
 
 const ChatComponent = () => {
+    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+
     const messagesEndRef = useRef(null); // 메시지 목록 컨테이너에 대한 ref 생성
     const stompClient = useRef(null);  // STOMP 클라이언트 인스턴스를 저장할 state 변수
     const [message, setMessage] = useState('');     // 사용자가 입력하는 메시지를 저장할 state 변수
     const [receivedMessages, setReceivedMessages] = useState([]); // 수신된 메시지들을 배열로 저장할 state 변수
-
     const [isLoading, setIsLoading] = useState(true); // state 변수로 로딩 상태를 추가합니다.
 
     // 메시지 목록이 업데이트될 때마다 스크롤을 맨 아래로 이동시키는 함수
@@ -96,15 +98,14 @@ const ChatComponent = () => {
         // STOMP 클라이언트 인스턴스를 생성합니다. 이 인스턴스는 웹소켓 연결을 관리합니다
         stompClient.current = new Client({
 
+            connectHeaders: {
+                'Authorization': `Bearer ${token}`, // 서버 측에서 이 헤더를 확인하여 인증 처리를 할 것입니다.
+            },
+
             // STOMP 클라이언트가 연결할 웹소켓 서버의 URL을 설정합니다.
             // brokerURL: '/ws', // Spring Boot 서버의 WebSocket URL
 
             webSocketFactory: () => new SockJS('/ws'), // proxy를 통한 접속
-
-            // 웹소켓 연결 시 사용할 헤더 정보(로그인과 패스코드)를 설정합니다.
-            // connectHeaders: {
-            //     "auth-token": "spring-chat-auth-token",
-            // },
 
             // 디버깅 정보를 콘솔에 출력하기 위한 함수를 설정합니다.
             debug: function (str){
@@ -162,7 +163,7 @@ const ChatComponent = () => {
                 stompClient.current.deactivate();
             }
         };
-    }, []);
+    }, [token]);
 
     // 메시지 목록 상태가 업데이트될 때마다 스크롤을 맨 아래로 이동
     useEffect(() => {
@@ -174,15 +175,11 @@ const ChatComponent = () => {
         // STOMP 클라이언트가 존재하는지 확인합니다.
         if (stompClient.current && message) {
 
-            const auth = JSON.parse(localStorage.getItem('auth'));
-            const senderUsername = auth ? auth.username : null; // 사용자 username이 없으면 null을 할당합니다.
-
             // 보낼 메시지 객체를 생성합니다. 여기에는 보내는 사람의 식별자, 메시지 텍스트, 그리고 현재 시간이 포함됩니다.
             const chatMessageDTO = {
                 chatRoomId: 'room1',
                 message: message, // 입력된 메시지 내용
                 // timestamp: new Date(), // 현재 시간
-                senderUsername: senderUsername // 가정한 보내는 사람의 ID
             };
 
             // STOMP 클라이언트의 publish 메서드를 사용하여 메시지를 전송합니다.
@@ -190,7 +187,10 @@ const ChatComponent = () => {
 
                 // 메시지를 보낼 목적지(엔드포인트)와 문자열로 변환된 메시지 객체를 지정합니다.
                 destination: '/app/chat.sendMessage',
-                body: JSON.stringify(chatMessageDTO)
+                body: JSON.stringify(chatMessageDTO),
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
 
@@ -204,10 +204,10 @@ const ChatComponent = () => {
         setMessage(event.target.value);
     };
 
-    // 엔터 키 이벤트를 처리하는 함수
+    // shift 키와 함께 엔터를 누르면 메시지를 보내지 않습니다.
     const handleKeyPress = (event) => {
-        // 엔터 키가 눌렸을 경우
-        if(event.key === 'Enter') {
+        // shift 키와 함께 엔터를 누르면 메시지를 보내지 않습니다.
+        if (event.key === 'Enter' && !event.shiftKey) {
             handleSendMessage();
         }
     };

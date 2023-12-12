@@ -35,7 +35,17 @@ dependencies {
 	// JUnit5와 함께 사용
 	testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
 
-	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// JSON Web Token(JWT)을 생성하고 파싱하는 라이브러리인 jjwt가
+	// 이 클래스를 사용하여 토큰의 서명 과정에서 Base64 인코딩 및 디코딩을 수행할 수 있습니다
+	// XML 데이터를 Java 데이터 타입으로 변환하거나 그 반대로 변환하는 데 사용되는 유틸리티 클래스
+	// JAXB API 의존성 추가
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	// JAXB 구현체 추가
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket' // 채팅 기능 구현
 }

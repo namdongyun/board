@@ -19,3 +19,6 @@ logging:
     org:
       springframework:
         security: DEBUG
+jwt:
+  secret:
+    key: '12213asdasd515235sgewgwgwgwgeweg251242121412ada'

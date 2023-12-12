@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../login/AuthContext";
 
 const Container = styled.div`
   padding: 20px;
@@ -39,6 +40,8 @@ const SubmitButton = styled.button`
 `;
 
 function BoardWrite(props) {
+    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -60,7 +63,9 @@ function BoardWrite(props) {
 
         try {
             const response = await axios.post('/api/board/write', boardData, {
-                withCredentials: true
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             console.log('글 작성 처리 성공', response);

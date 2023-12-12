@@ -144,9 +144,10 @@ export default function BoardHeader2() {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open} sx={
-                {backgroundColor: ''}
-            }>
+            <AppBar position="fixed" open={open} sx={{
+                height: '30',
+                backgroundColor: ''
+            }}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -192,7 +193,7 @@ export default function BoardHeader2() {
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
                             }}
-                            onClick={() => navigate('board/chat')} // 여기에 클릭 이벤트를 추가합니다.
+                            onClick={() => navigate('chatRoomList')} // 여기에 클릭 이벤트를 추가합니다.
                         >
                             <ListItemIcon
                                 sx={{

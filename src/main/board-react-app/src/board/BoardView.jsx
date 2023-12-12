@@ -72,25 +72,15 @@ const BackButton = styled.button`
 // {match} : 현재 URL의 정보를 객체 형태로 컴포넌트에 전달하는 것을 의미합니다.
 // 클릭한 게시글 id를 확인하기 위함 입니다.
 function BoardView() {
-    const [boardView, setBoardView] = useState("");
-    const [currentUser, setCurrentUser] = useState("");
-    const {id} = useParams(); // URL 파라미터에서 id를 추출합니다.
+    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
 
-    const {auth} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const [boardView, setBoardView] = useState("");
+    const {id} = useParams(); // URL 파라미터에서 id를 추출합니다.
 
     const navigate = useNavigate();
 
     // 컴포넌트가 마운트될 때 게시글 정보를 불러옵니다.
     useEffect(() => {
-
-        // 현재 로그인 된 사용자의 auth 값 가져오기
-        const loggedInUser = localStorage.getItem('auth');
-        if(loggedInUser) {
-            // 문자열로 저장된 인증 정보를 JavaScript 객체로 변환합니다.
-            setCurrentUser(JSON.parse(loggedInUser));
-
-            console.log('현재 로그인된 유저의 auth 정보입니다 : ', auth);
-        }
 
         const fetchBoardView = async () => {
             try {
@@ -110,43 +100,37 @@ function BoardView() {
     // 게시글 삭제 함수
     const handleDelete = async () => {
 
-        // 현재 로그인한 게시글 정보, 사용자 정보를 가져옵니다.
-        if (!boardView || !currentUser) {
-            alert('게시글 또는 사용자 정보를 불러올 수 없습니다.');
-            return;
-        }
-        // 관리자 또는 글 작성자의 경우만 삭제를 가능하게 합니다.
-        if (currentUser.username !== boardView.accountUsername && currentUser.role !== 'ROLE_ADMIN'){
-            alert('게시글 삭제 권한이 없습니다.');
-            return;
-        }
-
         if(window.confirm('정말로 글을 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`/api/board/delete/${id}`);
+                await axios.delete(`/api/board/delete/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
 
-                console.log('글 삭제 성공');
+                alert('글 삭제 성공');
 
                 navigate('/board/list');
             } catch (error) {
-                console.error('글 삭제에 실패했습니다.', error);
+                alert('글 삭제에 실패했습니다.', error);
             }
         }
     }
 
+    // 글 수정 버튼 클릭
     const handleEdit = async () => {
-        // 현재 로그인한 게시글 정보, 사용자 정보를 가져옵니다.
-        if (!boardView || !currentUser) {
-            alert('게시글 또는 사용자 정보를 불러올 수 없습니다.');
-            return;
-        }
-        // 관리자 또는 글 작성자의 경우만 수정을 가능하게 합니다.
-        if (currentUser.username !== boardView.accountUsername && currentUser.role !== 'ROLE_ADMIN'){
-            alert('게시글 수정 권한이 없습니다.');
-            return;
-        }
+        try {
+            await axios.get(`/api/board/updateBtn/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
 
-        navigate(`/board/editPage/${id}`);
+            navigate(`/board/editPage/${id}`);
+
+        } catch (error) {
+            alert('글을 수정할 권한이 없습니다.');
+        }
     }
 
     return (

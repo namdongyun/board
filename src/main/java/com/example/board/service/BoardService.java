@@ -5,18 +5,15 @@ import com.example.board.entity.Account;
 import com.example.board.entity.Board;
 import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
+import com.example.board.security.PrincipalDetails;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class BoardService {
@@ -31,21 +28,15 @@ public class BoardService {
     }
 
     // 게시글 저장 처리
-    public BoardDTO writeBoard(BoardDTO boardDTO, Authentication authentication) {
+    public BoardDTO writeBoard(BoardDTO boardDTO) {
 
-        // 현재 인증된 사용자의 authentication 를 가져옵니다.
-        // 이 객체는 현재 로그인한 사용자의 보안 관련 세부 정보를 포함하고 있습니다.
-
+        // 현재 jwt 토큰으로 인증된 정보에서 account 객체 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new IllegalStateException("인증 정보가 없습니다.");
         }
-
-        // 현재 인증된 사용자의 username 을 문자열로 저장
-        String currentPrincipalName = authentication.getName();
-
-        // 사용자의 username 으로 Account 엔티티 조회
-        Account currentAccount = accountRepository.findByUsername(currentPrincipalName)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자 username 값을 불러올 수 없습니다."));
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Account currentAccount = principalDetails.getAccount();
 
         Board board = new Board(); // 새로운 board (entity)객체 생성
         board.setTitle(boardDTO.getTitle());    // board 객체에 title 넣음
@@ -75,37 +66,62 @@ public class BoardService {
     }
 
     // 특정 게시글 삭제
-    public void deleteBoard(Long id) {
+    public void boardDelete(Long id) {
         // 게시글 존재 여부 확인
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+
+        // 현재 jwt 토큰으로 인증된 정보에서 account 객체 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Account account = principalDetails.getAccount();
+
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
+        if (!board.getAccount().getId().equals(account.getId())) {
+            throw new IllegalStateException("게시글을 삭제할 권한이 없습니다.");
+        }
+
         // 게시글 삭제
         boardRepository.delete(board);
     }
 
     // 특정 게시글 수정
-    public void updateBoard(Long id, BoardDTO boardDTO, Authentication authentication) {
+    public void boardEditSave(Long id, BoardDTO boardDTO) {
+        // 게시글 존재 여부 확인
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
 
-        // 현재 인증된 사용자의 authentication 를 가져옵니다.
-        // 이 객체는 현재 로그인한 사용자의 보안 관련 세부 정보를 포함하고 있습니다.
+        // 현재 jwt 토큰으로 인증된 정보에서 account 객체 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Account account = principalDetails.getAccount();
 
-        if (authentication == null) {
-            throw new IllegalStateException("인증 정보가 없습니다.");
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
+        if (!board.getAccount().getId().equals(account.getId())) {
+            throw new IllegalStateException("게시글을 수정할 권한이 없습니다.");
         }
-
-        // 현재 인증된 사용자의 username 을 문자열로 저장
-        String currentPrincipalName = authentication.getName();
-
-        // 사용자의 username 으로 Account 엔티티 조회
-        Account currentAccount = accountRepository.findByUsername(currentPrincipalName)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자 username 값을 불러올 수 없습니다."));
-
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         boardRepository.save(board);
+    }
+
+
+    // 게시글 수정 버튼 클릭
+    public void boardEditBtnClick(Long id) {
+        // 게시글 존재 여부 확인
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+
+        // 현재 jwt 토큰으로 인증된 정보에서 account 객체 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Account account = principalDetails.getAccount();
+
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
+        if (!board.getAccount().getId().equals(account.getId())) {
+            throw new IllegalStateException("게시글을 수정할 권한이 없습니다.");
+        }
     }
 
 

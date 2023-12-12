@@ -5,6 +5,7 @@ import com.example.board.entity.Account;
 import com.example.board.entity.ChatMessage;
 import com.example.board.repository.AccountRepository;
 import com.example.board.repository.ChatMessageRepository;
+import com.example.board.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,7 +15,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ChatServiceTest {
@@ -25,27 +28,35 @@ public class ChatServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private JwtUtil jwtUtil;
+
     @InjectMocks
     private ChatService chatService;
+
+    private Account account;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // account 객체 생성
+        account = new Account();
+        account.setId(1L);
+        account.setUsername("username");
+        account.setEmail("1@1");
+        account.setNickname("nickname");
+        account.setPassword("encodedPassword");
+        account.setRole("USER");
     }
 
 
     @Test
     void 채팅_메시지_저장_테스트() {
-        // given
-        // Account 객체
-        Long account_id = 1L;
-        Account account = new Account();
-        account.setId(account_id);
-        account.setUsername("username");
-        account.setPassword("1234");
-        account.setRole("USER");
-        account.setEmail("1@1");
-        account.setNickname("test");
+        // given(준비)
+        String rawToken = "Bearer some.jwt.token";
+        String token = rawToken.replace("Bearer ", "");
+        String username = "testUser";
 
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId("room");
@@ -57,15 +68,23 @@ public class ChatServiceTest {
         chatMessage.setMessage(chatMessageDTO.getMessage());
         chatMessage.setSender(account);
 
+        // 토큰에서 사용자 이름을 추출하는 과정을 스텁으로 설정
+        when(jwtUtil.getUsername(token)).thenReturn(username);
+
+        // accountRepository에서 Account를 찾는 과정을 스텁으로 설정
+        when(accountRepository.findByUsername(username)).thenReturn(Optional.of(account));
+
+        // // 저장할 때 반환될 ChatMessage의 스텁 설정
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
-        when(accountRepository.findByUsername(chatMessageDTO.getSenderUsername())).thenReturn(Optional.of(account));
 
         // when
-        ChatMessageDTO savedChatMessageDTO = chatService.saveChatMessage(chatMessageDTO);
+        ChatMessageDTO savedChatMessageDTO = chatService.saveChatMessage(chatMessageDTO, rawToken);
 
         // then
-        assertEquals(chatMessageDTO.getMessage(), savedChatMessageDTO.getMessage());
-        assertEquals(chatMessageDTO.getChatRoomId(), savedChatMessageDTO.getChatRoomId());
-        assertEquals(chatMessageDTO.getSenderUsername(), savedChatMessageDTO.getSenderUsername());
+        assertNotNull(savedChatMessageDTO);
+        assertEquals(account, chatMessage.getSender());
+        verify(chatMessageRepository).save(chatMessage);
+        verify(jwtUtil).getUsername(token);
+        verify(accountRepository).findByUsername(username);
     }
 }
