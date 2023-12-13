@@ -27,9 +27,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker("/room");
 
         // 클라이언트가 서버로 메시지를 보낼 때 사용할 경로의 접두사를 설정합니다.
-        // 예를 들어, 클라이언트가 "/send/chat.sendMessage"로 메시지를 보내면,
+        // 예를 들어, 클라이언트가 "/app/채팅방 id/sendMessage"로 메시지를 보내면,
         // 애플리케이션 내의 @MessageMapping 어노테이션이 달린 메서드가 해당 메시지를 처리하게 됩니다.
-        registry.setApplicationDestinationPrefixes("/send");
+        // "/roomJoin"은 @SubscribeMapping를 사용하기 위해
+        registry.setApplicationDestinationPrefixes("/app", "/roomJoin");
     }
 
     @Override

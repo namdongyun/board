@@ -193,27 +193,6 @@ export default function BoardHeader2() {
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
                             }}
-                            onClick={() => navigate('chatRoomList')} // 여기에 클릭 이벤트를 추가합니다.
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <ChatIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="채팅방" sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
                             onClick={() => navigate('board/list')} // 여기에 클릭 이벤트를 추가합니다.
                         >
                             <ListItemIcon
@@ -226,6 +205,27 @@ export default function BoardHeader2() {
                                 <ForumIcon />
                             </ListItemIcon>
                             <ListItemText primary="게시판" sx={{ opacity: open ? 1 : 0 }} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                            }}
+                            onClick={() => navigate('chatRoomList')} // 여기에 클릭 이벤트를 추가합니다.
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <ChatIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="채팅방" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
                     <Divider />

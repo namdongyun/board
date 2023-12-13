@@ -1,76 +1,68 @@
-import React, {useContext, useRef, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import axios from "axios";
 import {AuthContext} from "../login/AuthContext";
+import {Button} from "@mui/material";
+import CreateChatRoomModal from "./CreateChatRoomModal";
 
 export default function ChatRoomList() {
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
-
-    const [chatRooms, setChatRooms] = useState([]); // 채팅방 리스트 상태
-    const [selectedRoom, setSelectedRoom] = useState(null); // 선택된 채팅방 상태
-    const stompClient = useRef(null);
-
-    // 채팅방 생성 함수
-    const createChatRoom = (roomName) => {
-        if (stompClient.current) {
-            stompClient.current.publish({
-                destination: '/app/chat.create',
-                body: JSON.stringify({ name: roomName }),
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-        }
-    };
-
-    // 채팅방 리스트를 가져오는 함수 (예시)
-    const fetchChatRooms = () => {
-        // 서버에 채팅방 리스트를 요청하는 로직을 구현합니다.
-        // 예를 들어, 서버에 HTTP GET 요청을 보내고 응답을 받아올 수 있습니다.
-        // 이 예시에서는 임시로 하드코딩된 데이터를 사용합니다.
-        setChatRooms([{ id: 'room1', name: '채팅방1' }, { id: 'room2', name: '채팅방2' }]);
-    };
+    const navigate = useNavigate();
+    const [chatRooms, setChatRooms] = useState([]); // 상태로 채팅방 목록을 관리합니다.
+    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 창 상태
 
     useEffect(() => {
-        fetchChatRooms(); // 컴포넌트가 마운트될 때 채팅방 리스트를 가져옵니다.
+        // 서버에서 채팅방 목록을 가져오는 함수
+        const fetchChatRooms = async () => {
+            try {
+                const response = await axios.get('/api/chatrooms/list'); // Spring 서버의 채팅방 목록 API 엔드포인트
+                setChatRooms(response.data); // 응답 데이터로 상태 업데이트
 
-        // 여기에 웹소켓 연결 및 STOMP 클라이언트 설정 코드를 추가합니다.
-        // ...
+                console.log('채팅방 리스트 불러오기 성공: ', response.data);
+            } catch (error) {
+                console.error('채팅방 리스트 불러오는 중 오류 발생:', error.response || error);
+            }
+        };
 
-        // 채팅방 생성에 대한 응답을 처리하는 부분
-        stompClient.current.subscribe('/user/queue/chat.create', (message) => {
-            const newRoom = JSON.parse(message.body);
-            setChatRooms(prevRooms => [...prevRooms, newRoom]);
+        fetchChatRooms(); // 함수 호출
+    }, []); // 의존성 배열이 빈 배열이므로 컴포넌트 마운트 시 한 번만 호출됩니다.
 
-            // 생성된 채팅방으로 입장할 수 있도록 상태를 업데이트합니다.
-            setSelectedRoom(newRoom);
-        });
 
-        // ...
 
-    }, [token]);
+    // 채팅방을 클릭했을 때의 이벤트 핸들러
+    const handleListItemClick = (roomId) => {
+        navigate(`/chat/${roomId}`); // 여기서는 react-router-dom의 navigate 함수를 사용하여 해당 채팅방으로 이동합니다.
+    };
+
+    // 모달 창을 여는 함수
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // 모달 창을 닫는 함수
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
-        <div>
-            {/* 채팅방 생성 UI */}
-            <input
-                type="text"
-                placeholder="채팅방 이름"
-                onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                        createChatRoom(e.target.value);
-                        e.target.value = ''; // 입력 필드 초기화
-                    }
-                }}
-            />
-
-            {/* 채팅방 리스트 UI */}
-            <ul>
-                {chatRooms.map(room => (
-                    <li key={room.id} onClick={() => setSelectedRoom(room)}>
-                        {room.name}
-                    </li>
+        <>
+            <Button variant="contained" onClick={handleOpenModal}>
+                채팅방 생성
+            </Button>
+            <List component="nav" aria-label="main mailbox folders">
+                {chatRooms.map((room) => (
+                    <React.Fragment key={room.id}>
+                        <ListItem button onClick={() => handleListItemClick(room.id)}>
+                            <ListItemText primary={room.chatRoomName} />
+                        </ListItem>
+                        <Divider />
+                    </React.Fragment>
                 ))}
-            </ul>
-
-            {/* 선택된 채팅방이 있을 경우 채팅방 컴포넌트를 렌더링합니다. */}
-            {/*{selectedRoom && <ChatRoom room={selectedRoom} />}*/}
-        </div>
+            </List>
+            <CreateChatRoomModal isOpen={isModalOpen} onClose={handleCloseModal} />
+        </>
     );
 }

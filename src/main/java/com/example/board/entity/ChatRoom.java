@@ -17,12 +17,17 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 채팅방 ID
 
-    @Column(name = "name", nullable = false)
-    private String name; // 채팅방 이름
+    @Column(name = "chat_room_name", nullable = false)
+    private String chatRoomName; // 채팅방 이름
 
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt; // 채팅방 생성 시간
+
+    // 채팅방의 방장을 나타내는 필드
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id", referencedColumnName = "id")
+    private Account host; // 채팅방의 방장
 
     // 채팅방에 참여하고 있는 사용자들을 나타내는 연관 관계 설정
     @ManyToMany(fetch = FetchType.LAZY)
