@@ -4,7 +4,7 @@ import {Navigate, useLocation} from "react-router-dom";
 
 // 특정 사용자 역할에 따라 접근을 제한하는 라우팅 경로를 설정하는 데 사용됩니다.
 const ProtectedRoute = ({ children, ...rest }) => {
-    const {token, loading } = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태), loading(로딩 상태)를 가져옵니다.
+    const {accessToken, loading } = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태), loading(로딩 상태)를 가져옵니다.
 
     // useLocation() Hook 을 사용하여 현재 브라우저의 위치(경로) 정보를 location 변수에 저장
     const location = useLocation();
@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children, ...rest }) => {
         return <div>로딩 중...</div>;
     }
 
-    if (!token) {
+    if (!accessToken) {
         alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
         // auth 객체가 없거나 로그인하지 않은 상태면 로그인 페이지로 리다이렉트합니다.
         return <Navigate to="/login" state={{ from: location }} replace />;

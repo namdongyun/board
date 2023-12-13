@@ -1,5 +1,9 @@
 package com.example.board.utils;
 
+import com.example.board.entity.Account;
+import com.example.board.entity.RefreshToken;
+import com.example.board.repository.AccountRepository;
+import com.example.board.repository.RefreshTokenRepository;
 import com.example.board.security.PrincipalDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -11,15 +15,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
 public class JwtUtil {
 
     private final PrincipalDetailsService principalDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final AccountRepository accountRepository;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -86,6 +96,33 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
 
         // .getSubject()는 jwt의 페이로드(Payload)부분의 'sub' claims에 해당하는 값을 추출합니다.
+    }
+
+    // Refresh Token 생성 메소드
+    @Transactional
+    public String createRefreshToken(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+
+        // 만료시간 : 7Days
+        long expiredMs = 1000L * 60 * 60 * 24 * 7;
+        Instant expiryDate = Instant.now().plusMillis(expiredMs);
+
+        String rfToken = Jwts.builder()
+                .setSubject(account.getUsername())
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(expiryDate))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setAccount(account);
+        refreshToken.setRfToken(rfToken);
+        refreshToken.setExpiryDate(expiryDate);
+
+        refreshTokenRepository.save(refreshToken);
+
+        return rfToken;
     }
 
 }

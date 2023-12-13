@@ -10,7 +10,7 @@ export default function NicknameChangeModal({ open, handleClose }) {
         setNickname(event.target.value);
     };
 
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 jwt를 가져옵니다.
+    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 jwt를 가져옵니다.
 
     // 변경 사항을 저장하는 함수입니다.
     const handleSubmit = async () => {
@@ -24,7 +24,7 @@ export default function NicknameChangeModal({ open, handleClose }) {
             const response = await axios.post('/api/change-nickname', params, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
             });
 

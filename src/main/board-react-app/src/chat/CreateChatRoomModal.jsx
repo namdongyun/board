@@ -10,7 +10,7 @@ import {AuthContext} from "../login/AuthContext";
 import {useNavigate} from "react-router-dom";
 
 function CreateChatRoomModal({ isOpen, onClose }) {
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
     const navigate = useNavigate();
     const [chatRoomName, setChatRoomName] = useState("");
 
@@ -27,7 +27,7 @@ function CreateChatRoomModal({ isOpen, onClose }) {
         try {
             const response = await axios.post('/api/chatrooms/create', chatRoomData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
             });
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import {
     Button,
@@ -18,6 +18,7 @@ import {
 import Box from "@mui/material/Box";
 
 export default function BoardList() {
+    const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     // 페이지네이션 상태
     const [page, setPage] = useState(0); // 페이지 번호는 0부터 시작
@@ -55,6 +56,11 @@ export default function BoardList() {
         setPage(value - 1);
     };
 
+    // 게시글 row 클릭 시
+    const handleRowClick = (id) => {
+        navigate(`/board/view/${id}`);
+    };
+
     return (
         <Box>
             <Typography variant="h4" component="h1" gutterBottom>
@@ -78,7 +84,7 @@ export default function BoardList() {
                     </TableHead>
                     <TableBody>
                         {posts.map((post) => (
-                            <TableRow key={post.id} component={Link}  to={`/board/view/${post.id}`} hover style={{ textDecoration: 'none' }}>
+                            <TableRow key={post.id} onClick={() => handleRowClick(post.id)} hover style={{ textDecoration: 'none' }}>
                                 <TableCell component="th" scope="row">
                                     {post.id}
                                 </TableCell>

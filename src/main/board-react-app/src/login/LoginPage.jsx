@@ -30,11 +30,8 @@ function LoginPage(props) {
             const response = await axios.post('/api/login', data);
             console.log('로그인 response 값 : ', response);
 
-            // 서버로부터 받은 role 값에서 대괄호를 제거합니다.
-            // const roleWithoutBrackets = response.data.role.replace(/\[|\]/g, '');
-
             // 로그인 성공 후, AuthProvider의 login 함수를 호출하여 상태를 업데이트합니다.
-            login(response.data);
+            login(response);
 
             console.log('로그인 성공 : ', response.data);
             navigate('/'); // 홈페이지로 이동

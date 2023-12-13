@@ -7,6 +7,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +23,8 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         // StompHeaderAccessor를 사용하여 STOMP 메시지 헤더에 접근합니다.
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        StompHeaderAccessor accessor = MessageHeaderAccessor
+                .getAccessor(message, StompHeaderAccessor.class);
 
         // 메시지의 STOMP 명령이 CONNECT인 경우를 체크합니다. CONNECT 명령은 클라이언트가 처음으로 웹소켓 연결을 시도할 때 사용됩니다.
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {

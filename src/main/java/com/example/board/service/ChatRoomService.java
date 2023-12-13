@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -80,15 +82,14 @@ public class ChatRoomService {
 
     // 채팅방 입장
     @Transactional
-    public ChatMessageDTO joinRoom(Long roomId, String rawToken) {
+    public ChatMessageDTO joinRoom(Long roomId, Principal principal) {
         // 현재 ChatRoom 객체 추출
         ChatRoom currentChatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
 
-        // 토큰으로 현재 사용자 Account 객체 추출
-        String token = rawToken.replace("Bearer ", "");
-        Account currentAccount = accountRepository.findByUsername(jwtUtil.getUsername(token))
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 불러올 수 없습니다."));
+        // principal 으로 현재 사용자 Account 객체 추출
+        Account currentAccount = accountRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         // currentAccount가 currentChatRoom의 members에 포함되어 있는지 확인
         boolean isMember = currentChatRoom.getMembers().contains(currentAccount);

@@ -38,19 +38,19 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // JWT 인증 필터 적용
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
                 
-                // 로그아웃
-                .logout(logout -> logout
-                        // 로그아웃 api 주소 설정
-                        .logoutUrl("/api/logout")
-                        .logoutSuccessHandler(((request, response, authentication) -> {
-                            response.setStatus(HttpServletResponse.SC_OK);
-                        }))
-                        .invalidateHttpSession(true) // 세션 무효화
-                        .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제
-                        .permitAll()
-                );
+//                // 로그아웃
+//                .logout(logout -> logout
+//                        // 로그아웃 api 주소 설정
+//                        .logoutUrl("/api/logout")
+//                        .logoutSuccessHandler(((request, response, authentication) -> {
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                        }))
+//                        .invalidateHttpSession(true) // 세션 무효화
+//                        .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제
+//                        .permitAll()
+//                );
         return http.build();
     }
 

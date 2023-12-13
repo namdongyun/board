@@ -2,7 +2,6 @@ package com.example.board.controller;
 
 import com.example.board.dto.ChatMessageDTO;
 import com.example.board.dto.ChatRoomDTO;
-import com.example.board.entity.ChatMessage;
 import com.example.board.service.ChatMessageService;
 import com.example.board.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -51,24 +51,23 @@ public class ChatController {
     // 메서드가 반환하는 ChatMessageDTO 객체를 "/room/{roomId}" 경로에 구독되어 있는 모든 클라이언트에게 브로드캐스트합니다.
     @SendTo("/room/{roomId}")
     // @Payload: 이 어노테이션은 메서드의 인자로 들어오는 ChatMessageDTO 객체를 STOMP 메시지의 본문에서 추출하여 사용하도록 합니다.
-    public ChatMessageDTO sendMessage(@DestinationVariable Long roomId, @Payload ChatMessageDTO chatMessageDTO, @Header("Authorization") String rawToken) {
+    public ChatMessageDTO sendMessage(@DestinationVariable Long roomId, @Payload ChatMessageDTO chatMessageDTO, Principal principal) {
 
         // DTO를 엔티티로 변환하고 데이터베이스에 저장하고 다시 저장된 DB데이터를 DTO로 변환하여 반환합니다.
-        return chatMessageService.saveChatMessage(roomId, chatMessageDTO, rawToken);
+        return chatMessageService.saveChatMessage(roomId, chatMessageDTO, principal);
     }
 
     // {roomId} 채팅방에 입장하는 메서드입니다.
-//    @MessageMapping("/{roomId}/join")
-//    @SendTo("/room/{roomId}/joinMessage")
+    // 구독하면 바로 메시지 반환
     @SubscribeMapping("/{roomId}/joinMessage")
-    public ChatMessageDTO joinRoom(@DestinationVariable Long roomId, @Header("Authorization") String rawToken) {
-        return chatRoomService.joinRoom(roomId, rawToken);
+    public ChatMessageDTO joinRoom(@DestinationVariable Long roomId, Principal principal) {
+        return chatRoomService.joinRoom(roomId, principal);
     }
 
     // 클라이언트가 {roomId}방의 이전 대화 내역을 요청하는 엔드포인트
     @MessageMapping("/{roomId}/history")
     @SendTo("/room/{roomId}/history")
-    public List<ChatMessageDTO> getChatHistory(@DestinationVariable Long roomId, @Header("Authorization") String rawToken) {
-        return chatMessageService.getChatHistory(roomId, rawToken);
+    public List<ChatMessageDTO> getChatHistory(@DestinationVariable Long roomId, Principal principal) {
+        return chatMessageService.getChatHistory(roomId, principal);
     }
 }

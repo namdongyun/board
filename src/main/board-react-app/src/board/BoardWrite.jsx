@@ -40,7 +40,7 @@ const SubmitButton = styled.button`
 `;
 
 function BoardWrite(props) {
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const {accessToken} = useContext(AuthContext);
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -64,7 +64,7 @@ function BoardWrite(props) {
         try {
             const response = await axios.post('/api/board/write', boardData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
             });
 

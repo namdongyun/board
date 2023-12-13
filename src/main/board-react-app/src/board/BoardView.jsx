@@ -72,7 +72,7 @@ const BackButton = styled.button`
 // {match} : 현재 URL의 정보를 객체 형태로 컴포넌트에 전달하는 것을 의미합니다.
 // 클릭한 게시글 id를 확인하기 위함 입니다.
 function BoardView() {
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
 
     const [boardView, setBoardView] = useState("");
     const {id} = useParams(); // URL 파라미터에서 id를 추출합니다.
@@ -104,7 +104,7 @@ function BoardView() {
             try {
                 await axios.delete(`/api/board/delete/${id}`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${accessToken}`
                     },
                 });
 
@@ -122,7 +122,7 @@ function BoardView() {
         try {
             await axios.get(`/api/board/updateBtn/${id}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
             });
 

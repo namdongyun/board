@@ -20,7 +20,7 @@ const Loading = () => (
 
 export default function ChatRoom() {
     const { roomId } = useParams();     // 채팅방 id
-    const {token} = useContext(AuthContext);   // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const {accessToken} = useContext(AuthContext);   // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
     const navigate = useNavigate();
 
     const messagesEndRef = useRef(null); // 메시지 목록 컨테이너에 대한 ref 생성
@@ -35,7 +35,7 @@ export default function ChatRoom() {
         stompClient.current = new Client({
 
             connectHeaders: {
-                'Authorization': `Bearer ${token}`, // 서버 측에서 이 헤더를 확인하여 인증 처리를 할 것입니다.
+                'Authorization': `Bearer ${accessToken}`, // 서버 측에서 이 헤더를 확인하여 인증 처리를 할 것입니다.
             },
 
             // STOMP 클라이언트가 연결할 웹소켓 서버의 URL을 설정합니다.
@@ -54,13 +54,7 @@ export default function ChatRoom() {
         // 2. 웹소켓에 성공적으로 연결되었을 때 실행될 콜백 함수를 정의합니다.
         stompClient.current.onConnect = (frame) => {
             try {
-                // 2-4. 서버에서 보낸 채팅방 입장 응답 메시지를 받기 위해 특정 주제(/roomJoin/{roomId}/joinMessage)를 구독합니다.
-                stompClient.current.subscribe(`/roomJoin/${roomId}/joinMessage`, (message) => {
-                    // 메시지를 받았을 때 처리할 로직
-                }, { 'Authorization': `Bearer ${token}` }); // 구독 시 헤더에 토큰 포함
-
-
-                // 2-2. 서버에서 보낸 메시지를 받기 위해 특정 주제(/room/1)를 구독합니다.
+                // 2-1. 서버에서 보낸 메시지를 받기 위해 특정 주제(/room/1)를 구독합니다.
                 stompClient.current.subscribe(`/room/${roomId}`,
                     // 이 함수는 서버로부터 메시지가 도착할 때마다 실행됩니다. (messageData 객체는 서버로부터 받은 메시지 정보)
                     (messageData) => {
@@ -77,7 +71,7 @@ export default function ChatRoom() {
                         });
                     });
 
-                // 2-3. 이전 대화 내역을 받기 위해 특정 주제(/room/1/history)를 구독합니다.
+                // 2-2. 이전 대화 내역을 받기 위해 특정 주제(/room/1/history)를 구독합니다.
                 stompClient.current.subscribe(`/room/${roomId}/history`, (messageData) => {
                     const message = JSON.parse(messageData.body)
 
@@ -85,15 +79,15 @@ export default function ChatRoom() {
                     setReceivedMessages(message);
                 });
 
-                // 2-5. 이전 대화 내역을 요청합니다.
-                stompClient.current.publish({
-                    destination: `/app/${roomId}/history`,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
+                // 2-3. 서버에서 보낸 채팅방 입장 응답 메시지를 받기 위해 특정 주제(/roomJoin/{roomId}/joinMessage)를 구독합니다.
+                stompClient.current.subscribe(`/roomJoin/${roomId}/joinMessage`, (messageData) => {
+                    // 2-4. 채팅방 입장 성공 메시지를 받으면 이전 대화 내역을 요청합니다.
+                    stompClient.current.publish({
+                        destination: `/app/${roomId}/history`,
+                    });
                 });
 
-                // 2-6. 연결 성공 후 로딩 상태를 변경합니다.
+                // 2-5. 연결 성공 후 로딩 상태를 변경합니다.
                 setIsLoading(false);
 
             } catch (error){
@@ -110,7 +104,7 @@ export default function ChatRoom() {
                 stompClient.current.deactivate();
             }
         };
-    }, [roomId, token]);
+    }, [roomId, accessToken]);
 
     // 메시지 목록이 업데이트될 때마다 스크롤을 맨 아래로 이동시키는 함수
     const scrollToBottom = () => {
@@ -138,9 +132,6 @@ export default function ChatRoom() {
                 // 메시지를 보낼 목적지(엔드포인트)와 문자열로 변환된 메시지 객체를 지정합니다.
                 destination: `/app/${roomId}/sendMessage`,
                 body: JSON.stringify(chatMessageDTO),
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
             });
 
 
@@ -170,7 +161,7 @@ export default function ChatRoom() {
             try {
                 const response = await axios.delete(`/api/chatrooms/delete/${roomId}`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // 토큰을 헤더에 포함시켜야 한다면 추가
+                        Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 포함시켜야 한다면 추가
                     },
                 });
                 if (response.status === 200) {

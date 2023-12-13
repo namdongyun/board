@@ -40,7 +40,7 @@ const SubmitButton = styled.button`
 `;
 
 function BoardEdit(props) {
-    const {token} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
+    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -77,7 +77,7 @@ function BoardEdit(props) {
         try {
             const response = await axios.put(`/api/board/update/${id}`, boardData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
             });
 

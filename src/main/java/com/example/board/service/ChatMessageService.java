@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -28,16 +29,15 @@ public class ChatMessageService {
 
     // chatMessageDTO로 받은 데이터를 DB에 저장하고 다시 DTO로 변환하려 반환하는 메소드
     @Transactional
-    public ChatMessageDTO saveChatMessage(Long roomId, ChatMessageDTO chatMessageDTO, String rawToken) {
+    public ChatMessageDTO saveChatMessage(Long roomId, ChatMessageDTO chatMessageDTO, Principal principal) {
 
         // 현재 ChatRoom 객체 추출
         ChatRoom currentChatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
-        
-        // 토큰으로 현재 사용자 Account 객체 추출
-        String token = rawToken.replace("Bearer ", "");
-        Account currentAccount = accountRepository.findByUsername(jwtUtil.getUsername(token))
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 불러올 수 없습니다."));
+
+        // principal 으로 현재 사용자 Account 객체 추출
+        Account currentAccount = accountRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         // currentAccount가 currentChatRoom의 members에 포함되어 있는지 확인
         boolean isMember = currentChatRoom.getMembers().contains(currentAccount);
@@ -64,15 +64,14 @@ public class ChatMessageService {
     // 메소드 전체를 하나의 트랜잭션으로 처리합니다.
     // 이렇게 하면 메소드가 종료될 때까지 데이터베이스 세션이 유지되어 지연 로딩 문제를 해결할 수 있습니다.
     @Transactional
-    public List<ChatMessageDTO> getChatHistory(Long roomId, String rawToken) {
+    public List<ChatMessageDTO> getChatHistory(Long roomId, Principal principal) {
         // 현재 ChatRoom 객체 추출
         ChatRoom currentChatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
 
-        // 토큰으로 현재 사용자 Account 객체 추출
-        String token = rawToken.replace("Bearer ", "");
-        Account currentAccount = accountRepository.findByUsername(jwtUtil.getUsername(token))
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 불러올 수 없습니다."));
+        // principal 으로 현재 사용자 Account 객체 추출
+        Account currentAccount = accountRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         // currentAccount가 currentChatRoom의 members에 포함되어 있는지 확인
         boolean isMember = currentChatRoom.getMembers().contains(currentAccount);

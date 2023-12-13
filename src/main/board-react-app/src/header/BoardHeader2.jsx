@@ -109,6 +109,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function BoardHeader2() {
+    const {accessToken} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const theme = useTheme();
@@ -127,7 +128,9 @@ export default function BoardHeader2() {
         try {
             // axios.post 호출과 await를 사용하여 비동기 요청을 기다립니다.
             const response = await axios.post('/api/logout', {}, {
-                withCredentials: true // 쿠키를 포함시키기 위해 withCredentials 옵션을 true로 설정합니다.
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
             });
 
             // 로그아웃 성공 시 처리
