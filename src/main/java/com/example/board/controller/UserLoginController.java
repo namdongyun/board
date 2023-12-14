@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 public class UserLoginController {
@@ -18,6 +20,12 @@ public class UserLoginController {
     @PostMapping("/api/login")
     public ResponseEntity<TokenDTO> login(@RequestBody LoginRequest loginRequest) throws Exception {
         return ResponseEntity.ok().body(userLoginService.login(loginRequest));
+    }
+
+    // JWT가 만료되었을 때 refreshToken을 받아 새로운 accessToken 발급
+    @PostMapping("/api/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestBody Map<String, String> payload) throws Exception {
+        return ResponseEntity.ok().body(userLoginService.refreshToken(payload));
     }
 
     // 회원가입 컨트롤러

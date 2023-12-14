@@ -1,0 +1,17 @@
+package com.example.board.config;
+
+import com.example.board.repository.RefreshTokenRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+public class DatabaseInitializer implements CommandLineRunner {
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+        refreshTokenRepository.deleteAll();
+    }
+}

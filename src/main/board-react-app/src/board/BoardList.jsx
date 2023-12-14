@@ -16,6 +16,7 @@ import {
     Typography
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import api from "../axiosInterceptor/api";
 
 export default function BoardList() {
     const navigate = useNavigate();

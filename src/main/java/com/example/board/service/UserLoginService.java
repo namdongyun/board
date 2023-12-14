@@ -22,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Service
 public class UserLoginService {
@@ -64,6 +66,7 @@ public class UserLoginService {
         accountRepository.save(account);
     }
 
+    // 로그아웃
     @Transactional
     public void logout() {
         // 현재 jwt 토큰으로 인증된 정보에서 account 객체 추출
@@ -75,5 +78,18 @@ public class UserLoginService {
         Account currentAccount = principalDetails.getAccount();
 
         refreshTokenRepository.deleteByAccount(currentAccount);
+    }
+
+    // refreshToken을 이용해 accessToken 재발급
+    public String refreshToken(Map<String, String> payload) {
+
+        String refreshToken = payload.get("refreshToken");
+
+        if (!jwtUtil.validateRefreshToken(refreshToken)) {
+            // refreshToken이 유효하지 않다면 에러를 반환합니다.
+            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        }
+        // refreshToken이 유효하다면 새로운 accessToken을 생성합니다.
+        return jwtUtil.createJwt(jwtUtil.getUsername(refreshToken));
     }
 }

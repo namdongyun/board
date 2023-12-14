@@ -32,7 +32,7 @@ public class WebSecurityConfig {
                 .authorizeRequests(authorize -> authorize
                         // 정적 자원과 로그인, 회원가입 페이지는 인증 없이 접근 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자만 접근 가능한 URL
-                        .requestMatchers("/", "/api/register", "/api/login", "/api/board/list",
+                        .requestMatchers("/", "/api/register", "/api/login", "/api/board/list", "/api/refresh-token",
                                 "/api/board/view/**", "/api/chatrooms/list", "/ws/**", "/error/**").permitAll()
                         // 그 외의 모든 요청은 인증 필요
                         .anyRequest().authenticated()

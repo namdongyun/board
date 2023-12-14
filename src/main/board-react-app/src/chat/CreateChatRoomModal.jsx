@@ -8,9 +8,9 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import {AuthContext} from "../login/AuthContext";
 import {useNavigate} from "react-router-dom";
+import api from "../axiosInterceptor/api";
 
 function CreateChatRoomModal({ isOpen, onClose }) {
-    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
     const navigate = useNavigate();
     const [chatRoomName, setChatRoomName] = useState("");
 
@@ -25,11 +25,7 @@ function CreateChatRoomModal({ isOpen, onClose }) {
         const chatRoomData = {chatRoomName};
 
         try {
-            const response = await axios.post('/api/chatrooms/create', chatRoomData, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            const response = await api.post('/api/chatrooms/create', chatRoomData);
 
             console.log('채팅방 생성 성공', response);
 

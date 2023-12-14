@@ -25,6 +25,7 @@ import {AuthContext} from "../login/AuthContext";
 import axios from "axios";
 import PageRoutes from "../protectedRoute/PageRoutes";
 import SettingsIcon from '@mui/icons-material/Settings';
+import api from "../axiosInterceptor/api";
 
 // 사이드바 넓이를 240 픽셀로 설정
 const drawerWidth = 240;
@@ -109,7 +110,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function BoardHeader2() {
-    const {accessToken} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const theme = useTheme();
@@ -127,11 +127,7 @@ export default function BoardHeader2() {
     const handleLogout = async () => {      // 로그아웃 처리 함수
         try {
             // axios.post 호출과 await를 사용하여 비동기 요청을 기다립니다.
-            const response = await axios.post('/api/logout', {}, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            const response = await api.post('/api/logout');
 
             // 로그아웃 성공 시 처리
             console.log("로그아웃 성공 : ", response);

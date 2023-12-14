@@ -14,8 +14,10 @@ export const AuthProvider = ({children}) => {
     // 컴포넌트가 처음 마운트될 때 로컬 스토리지에서 인증 정보를 가져와 상태에 설정하게 됩니다.
     useEffect(() => {
         const storedToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
         if(storedToken) {
             setAccessToken(storedToken);
+            setRefreshToken(refreshToken);
         }
         setLoading(false); // 로딩 상태 업데이트
     }, []);
@@ -48,7 +50,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         // auth 상태를 하위 컴포넌트에게 전달합니다.
-        <AuthContext.Provider value={{accessToken, refreshToken, loading, login, logout, isAuthenticated}}>
+        <AuthContext.Provider value={{loading, login, logout, isAuthenticated}}>
             {children}
         </AuthContext.Provider>
     );

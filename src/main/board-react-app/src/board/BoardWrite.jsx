@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../login/AuthContext";
+import api from "../axiosInterceptor/api";
 
 const Container = styled.div`
   padding: 20px;
@@ -40,8 +41,6 @@ const SubmitButton = styled.button`
 `;
 
 function BoardWrite(props) {
-    const {accessToken} = useContext(AuthContext);
-
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -62,11 +61,7 @@ function BoardWrite(props) {
         const boardData = {title, content};
 
         try {
-            const response = await axios.post('/api/board/write', boardData, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            const response = await api.post('/api/board/write', boardData);
 
             console.log('글 작성 처리 성공', response);
 

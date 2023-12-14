@@ -4,16 +4,16 @@ import {AuthContext} from "./AuthContext";
 import {Button, Checkbox, FormControlLabel, TextField, Link, Grid, Typography, Avatar, Container} from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Box from "@mui/material/Box";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function LoginPage(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
 
     const {login} = useContext(AuthContext); // AuthContext에서 login 함수를 가져옵니다.
-
-    // 경로 이동 함수
-    const navigate = useNavigate();
 
     const handleLogin = async (event) => {
         event.preventDefault(); // 폼 제출 시 브라우저가 자동으로 페이지를 새로고침하는 것을 막습니다.
@@ -34,7 +34,7 @@ function LoginPage(props) {
             login(response);
 
             console.log('로그인 성공 : ', response.data);
-            navigate('/'); // 홈페이지로 이동
+            navigate(from, { replace: true }); // 이전 페이지로 이동
         } catch (error){
             console.log(`로그인 실패 : ${error}`);
         }

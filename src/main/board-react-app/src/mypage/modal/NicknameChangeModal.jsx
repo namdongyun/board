@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import {Box, Button, Grid, Modal, TextField} from "@mui/material";
 import {AuthContext} from "../../login/AuthContext";
 import axios from "axios";
+import api from "../../axiosInterceptor/api";
 
 export default function NicknameChangeModal({ open, handleClose }) {
     const [nickname, setNickname] = useState('');
@@ -9,8 +10,6 @@ export default function NicknameChangeModal({ open, handleClose }) {
     const handleNicknameChange = (event) => {
         setNickname(event.target.value);
     };
-
-    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 jwt를 가져옵니다.
 
     // 변경 사항을 저장하는 함수입니다.
     const handleSubmit = async () => {
@@ -21,10 +20,9 @@ export default function NicknameChangeModal({ open, handleClose }) {
 
         try {
             // axios를 이용하여 POST 요청 보내기
-            const response = await axios.post('/api/change-nickname', params, {
+            const response = await api.post('/api/change-nickname', params, {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${accessToken}`
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
             });
 

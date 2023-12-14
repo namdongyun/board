@@ -2,12 +2,11 @@ import React, {useContext, useState} from 'react';
 import { Button, TextField, Grid, Modal, Box } from '@mui/material';
 import axios from "axios";
 import {AuthContext} from "../../login/AuthContext";
+import api from "../../axiosInterceptor/api";
 
 export default function PasswordChangeModal({ open, handleClose}) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
-    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 jwt를 가져옵니다.
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -31,10 +30,9 @@ export default function PasswordChangeModal({ open, handleClose}) {
 
         try {
             // axios를 이용하여 POST 요청 보내기
-            const response = await axios.post('/api/change-password', params, {
+            const response = await api.post('/api/change-password', params, {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${accessToken}`
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
             });
 

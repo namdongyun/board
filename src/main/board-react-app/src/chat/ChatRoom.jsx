@@ -10,6 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import SendIcon from '@mui/icons-material/Send';
 import axios from "axios";
+import api from "../axiosInterceptor/api";
 
 // 로딩 컴포넌트
 const Loading = () => (
@@ -19,8 +20,8 @@ const Loading = () => (
 );
 
 export default function ChatRoom() {
+    const accessToken = localStorage.getItem('accessToken');
     const { roomId } = useParams();     // 채팅방 id
-    const {accessToken} = useContext(AuthContext);   // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
     const navigate = useNavigate();
 
     const messagesEndRef = useRef(null); // 메시지 목록 컨테이너에 대한 ref 생성
@@ -159,11 +160,7 @@ export default function ChatRoom() {
 
         if (isConfirmed) {
             try {
-                const response = await axios.delete(`/api/chatrooms/delete/${roomId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 포함시켜야 한다면 추가
-                    },
-                });
+                const response = await api.delete(`/api/chatrooms/delete/${roomId}`);
                 if (response.status === 200) {
                     // 삭제 성공 시, 채팅방 목록으로 리다이렉트 혹은 사용자에게 알림
                     alert('채팅방이 삭제되었습니다.');

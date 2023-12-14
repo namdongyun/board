@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {AuthContext} from "../login/AuthContext";
+import api from "../axiosInterceptor/api";
 
 const Container = styled.div`
   padding: 20px;
@@ -40,8 +41,6 @@ const SubmitButton = styled.button`
 `;
 
 function BoardEdit(props) {
-    const {accessToken} = useContext(AuthContext); // 현재 로그인 한 사용자의 auth(인증 상태)를 가져옵니다.
-
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const {id} = useParams();
@@ -75,11 +74,7 @@ function BoardEdit(props) {
         const boardData = {title, content};
 
         try {
-            const response = await axios.put(`/api/board/update/${id}`, boardData, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            const response = await api.put(`/api/board/update/${id}`, boardData);
 
             console.log('글 수정 요청 처리 성공 : ', response);
             // 수정 후 수정된 게시글로 라우팅

@@ -98,7 +98,7 @@ public class JwtUtil {
         // .getSubject()는 jwt의 페이로드(Payload)부분의 'sub' claims에 해당하는 값을 추출합니다.
     }
 
-    // Refresh Token 생성 메소드
+    // RefreshToken 생성 메소드
     @Transactional
     public String createRefreshToken(String username) {
         Account account = accountRepository.findByUsername(username)
@@ -123,6 +123,35 @@ public class JwtUtil {
         refreshTokenRepository.save(refreshToken);
 
         return rfToken;
+    }
+
+    // RefreshToken 토큰 검증
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            // 제공된 토큰을 파싱하고, 서명을 검증하여 토큰에 담긴 클레임(claims)
+            // secretKey는 토큰의 서명을 검증할 때 사용되는 비밀 키
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(refreshToken);
+
+            // 토큰의 만료 시간이 현재 시간보다 이전인지 확인합니다.
+            if (claims.getBody().getExpiration().before(new Date())) {
+
+                throw new IllegalArgumentException("refreshToken이 만료되었습니다.");
+//                return false; // refreshToken이 만료되었다면 유효하지 않습니다.
+            }
+            // refreshToken이 DB에 존재하지 않으면
+            if (!refreshTokenRepository.existsByRfToken(refreshToken)) {
+
+                throw new IllegalArgumentException("refreshToken이 DB에 존재하지 않습니다.");
+            }
+
+            return true;
+
+        } catch (IllegalArgumentException e) {
+            // 예외를 다시 던지기
+            throw e;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
