@@ -40,6 +40,10 @@ export const AuthProvider = ({children}) => {
         setAccessToken(null);
         setRefreshToken(null);
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        console.log('저장된 accessToken : ', localStorage.getItem('accessToken'));
+        console.log('저장된 refreshToken : ', localStorage.getItem('refreshToken'));
     };
 
     // 로그인 여부를 확인하는 함수입니다.

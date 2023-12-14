@@ -4,6 +4,8 @@ import com.example.board.dto.AccountDTO;
 import com.example.board.dto.LoginRequest;
 import com.example.board.dto.TokenDTO;
 import com.example.board.entity.Account;
+import com.example.board.entity.AccountDetail;
+import com.example.board.repository.AccountDetailRepository;
 import com.example.board.repository.AccountRepository;
 import com.example.board.repository.RefreshTokenRepository;
 import com.example.board.security.PrincipalDetails;
@@ -31,10 +33,11 @@ public class UserLoginService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final AccountDetailRepository accountDetailRepository;
     private final JwtUtil jwtUtil;
 
 
-    // JWT 이용한 로그인 서비스
+    // JWT 이용한 로그인
     public TokenDTO login(LoginRequest loginRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -54,8 +57,9 @@ public class UserLoginService {
         return tokenDTO;
     }
 
-    // 회원가입 서비스
-    public void save(AccountDTO accountDto) {
+    // 회원가입
+    @Transactional
+    public void register(AccountDTO accountDto) {
         Account account = new Account();
         account.setUsername(accountDto.getUsername());
         account.setPassword(bCryptPasswordEncoder.encode(accountDto.getPassword()));
@@ -64,6 +68,10 @@ public class UserLoginService {
         account.setRole("USER");
 
         accountRepository.save(account);
+
+        AccountDetail accountDetail = new AccountDetail(); // AccountDetail의 account 필드 설정
+        accountDetail.setAccount(account);
+        accountDetailRepository.save(accountDetail); // AccountDetail 저장
     }
 
     // 로그아웃
@@ -81,6 +89,7 @@ public class UserLoginService {
     }
 
     // refreshToken을 이용해 accessToken 재발급
+    @Transactional
     public String refreshToken(Map<String, String> payload) {
 
         String refreshToken = payload.get("refreshToken");

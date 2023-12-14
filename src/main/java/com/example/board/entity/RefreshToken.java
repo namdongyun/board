@@ -2,6 +2,7 @@ package com.example.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.Instant;
 
@@ -15,6 +16,7 @@ public class RefreshToken {
 
     @OneToOne
     @JoinColumn(name = "account_username", referencedColumnName = "id")
+    @ToString.Exclude
     private Account account;
 
     @Column(nullable = false, unique = true)

@@ -1,13 +1,15 @@
 import * as React from 'react';
 import {Container, Typography, Paper, Button, Stack} from '@mui/material';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PasswordChangeModal from "./modal/PasswordChangeModal";
 import Box from "@mui/material/Box";
 import NicknameChangeModal from "./modal/NicknameChangeModal";
+import api from "../axiosInterceptor/api";
 
 export default function MyPage() {
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const [nicknameModalOpen, setNicknameModalOpen] = useState(false);
+    const [money, setMoney] = useState(0);
 
     const handleOpenPasswordModal = () => {
         setPasswordModalOpen(true);
@@ -24,6 +26,23 @@ export default function MyPage() {
     const handleCloseNicknameModal = () => {
         setNicknameModalOpen(false);
     };
+
+    useEffect(() => {
+        const fetchMoney = async () => {
+            try{
+                const response = await api('/api/accountDetail/loadMoney');
+
+                if (response.status !== 200) {
+                    throw new Error(`서버 통신에 문제가 발생했습니다. 상태 코드: ${response.status}`);
+                }
+                console.log("money: ", response.data);
+                setMoney(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchMoney();
+    }, []);
 
     return (
         <Container maxWidth="sm" sx={{ mt: 4 }}>
@@ -48,6 +67,11 @@ export default function MyPage() {
                         </Button>
                     </Box>
                     <NicknameChangeModal open={nicknameModalOpen} handleClose={handleCloseNicknameModal}/>
+                    <Box>
+                        <Typography variant="body1" gutterBottom>
+                            보유 금액: {money.toLocaleString()}
+                        </Typography>
+                    </Box>
                 </Stack>
             </Paper>
         </Container>

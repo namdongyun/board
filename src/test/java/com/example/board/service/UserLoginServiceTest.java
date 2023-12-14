@@ -42,7 +42,7 @@ public class UserLoginServiceTest {
                 .thenReturn("encryptedPassword");
 
         // when
-        userLoginService.save(accountDTO);
+        userLoginService.register(accountDTO);
 
         // Then
         // accountRepository의 save 메소드가 정확히 한 번 호출되었는지 검증

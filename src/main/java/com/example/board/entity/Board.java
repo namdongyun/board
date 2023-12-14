@@ -2,6 +2,7 @@ package com.example.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class Board {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @ToString.Exclude
     private Account account;
 
     // 생성 날짜와 시간

@@ -30,9 +30,9 @@ public class UserLoginController {
 
     // 회원가입 컨트롤러
     @PostMapping("/api/register")
-    public void registerUserAccount(@RequestBody AccountDTO accountDto) {
+    public void register(@RequestBody AccountDTO accountDto) {
 
-        userLoginService.save(accountDto);
+        userLoginService.register(accountDto);
     }
 
     // 로그아웃 컨트롤러
