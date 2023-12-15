@@ -22,7 +22,6 @@ import {useNavigate} from "react-router-dom";
 import {Button} from "@mui/material";
 import {useContext} from "react";
 import {AuthContext} from "../login/AuthContext";
-import axios from "axios";
 import PageRoutes from "../protectedRoute/PageRoutes";
 import SettingsIcon from '@mui/icons-material/Settings';
 import api from "../axiosInterceptor/api";
@@ -141,11 +140,15 @@ export default function BoardHeader2() {
     }
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', width: '100%', height: '100%'}}>
             <CssBaseline />
-            <AppBar position="fixed" open={open} sx={{
+            <AppBar
+                position="fixed"
+                open={open}
+                elevation={0}
+                sx={{
                 height: '30',
-                backgroundColor: ''
+                backgroundColor: 'white'
             }}>
                 <Toolbar>
                     <IconButton
@@ -156,34 +159,46 @@ export default function BoardHeader2() {
                         sx={{
                             marginRight: 5,
                             ...(open && { display: 'none' }),
+                            color: 'black',
                         }}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
+                    <Typography variant="h6" component="div" sx={{
+                        flexGrow: 1,
+                        cursor: 'pointer',
+                        color: 'black'
+                    }} onClick={() => navigate('/')}>
                         누구세요
                     </Typography>
                     {!isAuthenticated() && (
-                        <>
-                            <Button color="inherit" onClick={() => navigate('/login')}>
-                                LOGIN
-                            </Button>
-                        </>
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate('/login')} sx={{
+                            color: 'black'
+                        }}>
+                            LOGIN
+                        </Button>
                     )}
                     {isAuthenticated() && (
-                        <Button color="inherit" onClick={handleLogout}>
+                        <Button color="inherit" onClick={handleLogout} sx={{
+                            color: 'black'
+                        }}>
                             LOGOUT
                         </Button>
                     )}
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open}>
+            <Drawer variant="permanent" open={open} sx={{
+                '& .MuiDrawer-paper': {
+                    border: 'none', // 이렇게 하면 paper 요소의 경계선을 제거할 수 있습니다.
+                },
+            }}>
                 <DrawerHeader>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
-                <Divider />
                 <List>
                     <ListItem disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
@@ -251,8 +266,16 @@ export default function BoardHeader2() {
                     </ListItem>
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
+            <Box component="main" sx={{
+                flexGrow: 1,
+                p: 3,
+                backgroundColor: '#EEF2F6',
+                width: '100%',
+                height: '100%',
+                borderRadius: '12px 12px 0px 0px',
+                mt: '64px'
+            }}>
+                {/*<DrawerHeader />*/}
                 <PageRoutes/>
             </Box>
         </Box>

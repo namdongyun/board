@@ -38,6 +38,7 @@ public class UserLoginService {
 
 
     // JWT 이용한 로그인
+    @Transactional
     public TokenDTO login(LoginRequest loginRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -71,6 +72,8 @@ public class UserLoginService {
 
         AccountDetail accountDetail = new AccountDetail(); // AccountDetail의 account 필드 설정
         accountDetail.setAccount(account);
+        accountDetail.setXp(0L);
+        accountDetail.setMoney(0L);
         accountDetailRepository.save(accountDetail); // AccountDetail 저장
     }
 

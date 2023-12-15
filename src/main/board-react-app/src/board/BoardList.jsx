@@ -16,7 +16,6 @@ import {
     Typography
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import api from "../axiosInterceptor/api";
 
 export default function BoardList() {
     const navigate = useNavigate();
@@ -64,31 +63,25 @@ export default function BoardList() {
 
     return (
         <Box>
-            <Typography variant="h4" component="h1" gutterBottom>
-                게시판
-            </Typography>
-            {/* 글쓰기 버튼 */}
-            <Box display="flex" justifyContent="flex-end" mb={2}>
-                <Button variant="contained" color="primary" component={Link}  to={`/board/write`}>
-                    글쓰기
-                </Button>
-            </Box>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} sx={{
+                boxShadow: 'none',
+                borderRadius: '12px',
+            }}>
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>번호</TableCell>
-                            <TableCell onClick={() => handleSortRequest('title')}>제목</TableCell>
-                            <TableCell>작성자</TableCell>
-                            <TableCell onClick={() => handleSortRequest('createdAt')}>작성일</TableCell>
+                            {/*<TableCell>번호</TableCell>*/}
+                            <TableCell onClick={() => handleSortRequest('title')} style={{ width: "50%" }}>Title</TableCell>
+                            <TableCell style={{ width: "20%" }}>User</TableCell>
+                            <TableCell onClick={() => handleSortRequest('createdAt')} style={{ width: "20%" }}>Date</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {posts.map((post) => (
                             <TableRow key={post.id} onClick={() => handleRowClick(post.id)} hover style={{ textDecoration: 'none' }}>
-                                <TableCell component="th" scope="row">
-                                    {post.id}
-                                </TableCell>
+                                {/*<TableCell component="th" scope="row">*/}
+                                {/*    {post.id}*/}
+                                {/*</TableCell>*/}
                                 <TableCell>{post.title}</TableCell>
                                 <TableCell>{post.accountNickname}</TableCell>
                                 <TableCell>
@@ -114,6 +107,11 @@ export default function BoardList() {
                     showFirstButton
                     showLastButton
                 />
+            </Box>
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button variant="contained" color="primary" component={Link}  to={`/board/write`}>
+                    글쓰기
+                </Button>
             </Box>
         </Box>
     );

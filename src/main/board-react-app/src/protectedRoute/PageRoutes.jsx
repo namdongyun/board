@@ -22,7 +22,11 @@ export default function PageRoutes() {
     );
 
     return (
-        <Routes>
+        <Routes style={{
+            // backgroundColor: '#EEF2F6',
+            width: '100%',
+            height: '100%',
+        }}>
             <Route path="/" element={<MainPage/>} />
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/register" element={<RegisterPage/>} />

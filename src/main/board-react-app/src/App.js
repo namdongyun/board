@@ -3,9 +3,15 @@ import BoardHeader2 from "./header/BoardHeader2";
 
 function App() {
     return (
-        <AuthProvider>
-            <BoardHeader2/>
-        </AuthProvider>
+        <div style={{
+            // backgroundColor: '#EEF2F6',
+            width: '100%',
+            height: '100%',
+        }}>
+            <AuthProvider>
+                <BoardHeader2/>
+            </AuthProvider>
+        </div>
     );
 }
 

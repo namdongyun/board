@@ -24,7 +24,7 @@ public class UserLoginController {
 
     // JWT가 만료되었을 때 refreshToken을 받아 새로운 accessToken 발급
     @PostMapping("/api/refresh-token")
-    public ResponseEntity<String> refreshToken(@RequestBody Map<String, String> payload) throws Exception {
+    public ResponseEntity<String> refreshToken(@RequestBody Map<String, String> payload) {
         return ResponseEntity.ok().body(userLoginService.refreshToken(payload));
     }
 
