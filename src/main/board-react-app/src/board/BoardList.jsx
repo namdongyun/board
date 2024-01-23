@@ -71,9 +71,9 @@ export default function BoardList() {
                     <TableHead>
                         <TableRow>
                             {/*<TableCell>번호</TableCell>*/}
-                            <TableCell onClick={() => handleSortRequest('title')} style={{ width: "50%" }}>Title</TableCell>
-                            <TableCell style={{ width: "20%" }}>User</TableCell>
-                            <TableCell onClick={() => handleSortRequest('createdAt')} style={{ width: "20%" }}>Date</TableCell>
+                            <TableCell onClick={() => handleSortRequest('title')} style={{ width: "50%" }}>제목</TableCell>
+                            <TableCell style={{ width: "20%" }}>작성자</TableCell>
+                            <TableCell onClick={() => handleSortRequest('createdAt')} style={{ width: "20%" }}>작성일</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
