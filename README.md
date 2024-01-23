@@ -16,6 +16,10 @@ Spring과 React를 사용한 게시판과 실시간 채팅 기능을 갖춘 커�
 
 ## 기술 스택
 
-- **백엔드**: Spring Boot
-- **프론트엔드**: React, MUI
+### ✔️Frond-end
+<img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black"/>
+
+### ✔️Back-end
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=Spring&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"> 
+
 - **데이터베이스**: MariaDB
