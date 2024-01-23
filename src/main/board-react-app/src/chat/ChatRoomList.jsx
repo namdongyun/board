@@ -1,18 +1,19 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import axios from "axios";
-import {AuthContext} from "../login/AuthContext";
 import {Button} from "@mui/material";
 import CreateChatRoomModal from "./CreateChatRoomModal";
+import {AuthContext} from "../login/AuthContext";
 
 export default function ChatRoomList() {
     const navigate = useNavigate();
     const [chatRooms, setChatRooms] = useState([]); // 상태로 채팅방 목록을 관리합니다.
     const [isModalOpen, setIsModalOpen] = useState(false); // 모달 창 상태
+    const {isAuthenticated} = useContext(AuthContext);
 
     useEffect(() => {
         // 서버에서 채팅방 목록을 가져오는 함수
@@ -39,7 +40,13 @@ export default function ChatRoomList() {
 
     // 모달 창을 여는 함수
     const handleOpenModal = () => {
-        setIsModalOpen(true);
+        if (isAuthenticated()) {
+            setIsModalOpen(true);
+        } else {
+            alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+            // auth 객체가 없거나 로그인하지 않은 상태면 로그인 페이지로 리다이렉트합니다.
+            navigate('/login');
+        }
     };
 
     // 모달 창을 닫는 함수

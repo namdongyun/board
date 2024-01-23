@@ -270,8 +270,6 @@ export default function BoardHeader2() {
                 flexGrow: 1,
                 p: 3,
                 backgroundColor: '#EEF2F6',
-                width: '100%',
-                height: '100%',
                 borderRadius: '12px 12px 0px 0px',
                 mt: '64px'
             }}>

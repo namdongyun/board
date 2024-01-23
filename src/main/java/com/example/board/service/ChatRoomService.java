@@ -9,7 +9,6 @@ import com.example.board.repository.AccountRepository;
 import com.example.board.repository.ChatMessageRepository;
 import com.example.board.repository.ChatRoomRepository;
 import com.example.board.security.PrincipalDetails;
-import com.example.board.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,7 +29,6 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final AccountRepository accountRepository;
-    private final JwtUtil jwtUtil;
 
 
     // 채팅방 리스트 불러오기

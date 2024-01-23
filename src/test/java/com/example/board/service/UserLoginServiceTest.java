@@ -2,6 +2,7 @@ package com.example.board.service;
 
 import com.example.board.dto.AccountDTO;
 import com.example.board.entity.Account;
+import com.example.board.repository.AccountDetailRepository;
 import com.example.board.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.mockito.Mockito.*;
 
-public class UserLoginServiceTest {
+class UserLoginServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private AccountDetailRepository accountDetailRepository;
 
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;

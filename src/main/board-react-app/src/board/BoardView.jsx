@@ -120,7 +120,7 @@ function BoardView() {
             navigate(`/board/editPage/${id}`);
 
         } catch (error) {
-            alert('글을 수정할 권한이 없습니다.');
+            alert('글을 수정할 권한이 없습니다.', error);
         }
     }
 

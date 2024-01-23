@@ -76,13 +76,13 @@ public class BoardService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Account account = principalDetails.getAccount();
 
-        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
-        if (!board.getAccount().getId().equals(account.getId())) {
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인, 관리자는 삭제 가능
+        if (board.getAccount().getId().equals(account.getId()) || account.getRole().equals("ADMIN")) {
+            // 게시글 삭제
+            boardRepository.delete(board);
+        } else {
             throw new IllegalStateException("게시글을 삭제할 권한이 없습니다.");
         }
-
-        // 게시글 삭제
-        boardRepository.delete(board);
     }
 
     // 특정 게시글 수정
@@ -96,14 +96,14 @@ public class BoardService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Account account = principalDetails.getAccount();
 
-        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
-        if (!board.getAccount().getId().equals(account.getId())) {
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인, 관리자는 수정 가능
+        if (board.getAccount().getId().equals(account.getId()) || account.getRole().equals("ADMIN")) {
+            board.setTitle(boardDTO.getTitle());
+            board.setContent(boardDTO.getContent());
+            boardRepository.save(board);
+        } else {
             throw new IllegalStateException("게시글을 수정할 권한이 없습니다.");
         }
-
-        board.setTitle(boardDTO.getTitle());
-        board.setContent(boardDTO.getContent());
-        boardRepository.save(board);
     }
 
 
@@ -118,8 +118,10 @@ public class BoardService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Account account = principalDetails.getAccount();
 
-        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인
-        if (!board.getAccount().getId().equals(account.getId())) {
+        // 게시글 작성자의 id와 현재 인증된 사용자의 id가 일치하는지 확인, 관리자는 수정 가능
+        if (board.getAccount().getId().equals(account.getId()) || account.getRole().equals("ADMIN")) {
+            // 권한 확인
+        } else {
             throw new IllegalStateException("게시글을 수정할 권한이 없습니다.");
         }
     }

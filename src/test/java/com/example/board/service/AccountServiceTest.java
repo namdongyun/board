@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class  AccountServiceTest {
+class AccountServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
@@ -53,15 +53,14 @@ class  AccountServiceTest {
         // SecurityContext에 Authentication 객체를 설정합니다.
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        when(accountRepository.save(any(Account.class))).thenReturn(account);
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
     }
 
     @Test
     void 비밀번호_변경_테스트_() {
         // Arrange
         String newPassword = "newPassword";
-
-        when(accountRepository.save(any(Account.class))).thenReturn(account);
-        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
         // Act
         boolean result = accountService.changePassword(newPassword);
@@ -79,8 +78,6 @@ class  AccountServiceTest {
     void 닉네임_변경_테스트() {
         // given
         String newNickname = "newNickname";
-
-        when(accountRepository.save(any(Account.class))).thenReturn(account);
 
         // when
         boolean result = accountService.changeNickname(newNickname);

@@ -38,7 +38,7 @@ export default function MyPage() {
                 console.log("money: ", response.data);
                 setMoney(response.data);
             } catch (error) {
-                console.error(error);
+                console.error("사용자 money 로드 오류: ", error);
             }
         }
         fetchMoney();

@@ -11,14 +11,11 @@ api.interceptors.request.use(
         const now = Date.now();
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
-        console.log("accessToken: ", accessToken);
-        console.log("refreshToken: ", refreshToken);
 
         if (!accessToken || accessToken.split('.').length !== 3) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-
-            window.location.reload();
+            window.location.replace('/login');
 
             return Promise.reject(new Error('액세스 토큰이 없어 로그아웃 처리가 필요합니다.'));
         }
@@ -30,6 +27,11 @@ api.interceptors.request.use(
             decodedToken = jwtDecode(accessToken);
         } catch (error) {
             console.error('토큰 디코딩 실패:', error);
+
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            window.location.replace('/login');
+
             return Promise.reject(error);
         }
 
@@ -47,9 +49,11 @@ api.interceptors.request.use(
                 config.headers['Authorization'] = `Bearer ${newAccessToken}`;
             } catch (error) {
                 console.error("토큰 갱신 실패: ", error);
-                // 에러 처리 로직 (예: 로그아웃 처리, 에러 페이지로 리다이렉트 등)
-                // 예를 들어, 로그아웃 처리를 하고 싶다면:
-                // logoutUser(); // 로그아웃 처리 함수를 호출합니다.
+
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                window.location.replace('/login');
+
                 return Promise.reject(error);
             }
         } else {
