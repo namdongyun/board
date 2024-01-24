@@ -11,9 +11,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow,
-    Typography
+    TableSortLabel,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -71,9 +70,25 @@ export default function BoardList() {
                     <TableHead>
                         <TableRow>
                             {/*<TableCell>번호</TableCell>*/}
-                            <TableCell onClick={() => handleSortRequest('title')} style={{ width: "50%" }}>제목</TableCell>
+                            <TableCell style={{ width: "50%" }}>
+                                <TableSortLabel
+                                    active={orderBy === 'title'}
+                                    direction={orderBy === 'title' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('title')}
+                                >
+                                    제목
+                                </TableSortLabel>
+                            </TableCell>
                             <TableCell style={{ width: "20%" }}>작성자</TableCell>
-                            <TableCell onClick={() => handleSortRequest('createdAt')} style={{ width: "20%" }}>작성일</TableCell>
+                            <TableCell style={{ width: "20%" }}>
+                                <TableSortLabel
+                                    active={orderBy === 'createdAt'}
+                                    direction={orderBy === 'createdAt' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('createdAt')}
+                                >
+                                    작성일
+                                </TableSortLabel>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

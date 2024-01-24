@@ -68,13 +68,13 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."));
 
-        // 현재 계정이 채팅방의 호스트인지 확인
-        if (!chatRoom.getHost().equals(currentAccount)) {
+        // 현재 계정이 채팅방의 호스트인지 확인, 관리자는 삭제 가능
+        if (chatRoom.getHost().equals(currentAccount) || currentAccount.getRole().equals("ADMIN")) {
+            chatMessageRepository.deleteByChatRoomId(roomId);
+            chatRoomRepository.delete(chatRoom);
+        } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "채팅방의 호스트만이 채팅방을 삭제할 수 있습니다.");
         }
-        chatMessageRepository.deleteByChatRoomId(roomId);
-
-        chatRoomRepository.delete(chatRoom);
     }
 
     // 채팅방 입장

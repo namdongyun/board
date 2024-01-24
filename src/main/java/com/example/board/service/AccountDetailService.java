@@ -24,4 +24,12 @@ public class AccountDetailService {
                 .map(AccountDetail::getMoney)
                 .orElseThrow(() -> new RuntimeException("계정을 찾을 수 없습니다."));
     }
+
+    // 현재 계정 detail 조회
+    public Long loadDetail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Account account = principalDetails.getAccount();
+
+    }
 }

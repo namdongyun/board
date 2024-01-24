@@ -11,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import MyPage from "../mypage/MyPage";
 import ChatRoomList from "../chat/ChatRoomList";
 import ChatRoom from "../chat/ChatRoom";
+import TitleEnhancement from "../game/TitleEnhancement";
 
 export default function PageRoutes() {
 
@@ -37,6 +38,7 @@ export default function PageRoutes() {
             <Route path="/mypage" element={renderProtected(MyPage)} />
             <Route path="/chatRoomList" element={<ChatRoomList/>} />
             <Route path="/chat/:roomId" element={renderProtected(ChatRoom)} />
+            <Route path="/game" element={renderProtected(TitleEnhancement)}/>
 
 
             <Route path="*" element={<Navigate to="/" replace />} />

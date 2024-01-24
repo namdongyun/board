@@ -25,6 +25,7 @@ import {AuthContext} from "../login/AuthContext";
 import PageRoutes from "../protectedRoute/PageRoutes";
 import SettingsIcon from '@mui/icons-material/Settings';
 import api from "../axiosInterceptor/api";
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 // 사이드바 넓이를 240 픽셀로 설정
 const drawerWidth = 240;
@@ -169,7 +170,7 @@ export default function BoardHeader2() {
                         cursor: 'pointer',
                         color: 'black'
                     }} onClick={() => navigate('/')}>
-                        누구세요
+                        테스트
                     </Typography>
                     {!isAuthenticated() && (
                         <Button
@@ -262,6 +263,27 @@ export default function BoardHeader2() {
                                 <SettingsIcon />
                             </ListItemIcon>
                             <ListItemText primary="마이페이지" sx={{ opacity: open ? 1 : 0 }} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                            }}
+                            onClick={() => navigate('game')} // 여기에 클릭 이벤트를 추가합니다.
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <SportsEsportsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
                 </List>
