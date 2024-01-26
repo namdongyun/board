@@ -17,7 +17,7 @@ public class AccountDetail {
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long money; // 사용자의 돈을 나타냅니다.
 
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 1")
     private Long titleLevel; // 사용자의 돈을 나타냅니다.
 
     @OneToOne

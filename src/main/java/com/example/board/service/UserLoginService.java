@@ -74,6 +74,7 @@ public class UserLoginService {
         accountDetail.setAccount(account);
         accountDetail.setXp(0L);
         accountDetail.setMoney(0L);
+        accountDetail.setTitleLevel(1L);
         accountDetailRepository.save(accountDetail); // AccountDetail 저장
     }
 
