@@ -16,10 +16,10 @@ Spring과 React를 사용하여 구현한 게시판과 실시간 채팅 기능�
 
 ## 기술 스택
 
-### ✔️Frond-end
+### ✔️Front-End
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/> <img src="https://img.shields.io/badge/MUI-007FFF?style=flat-square&logo=mui&logoColor=white"/>
 
-### ✔️Back-end
+### ✔️Back-End
 <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"> 
 
 ### ✔️Database
