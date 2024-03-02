@@ -23,3 +23,17 @@ Spring과 React를 사용하여 구현한 게시판과 실시간 채팅 기능�
 
 ### ✔️Database
 <img src="https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariaDB&logoColor=white"/>
+
+#### 게시글 리스트
+<img src="https://github.com/namdongyun/board/assets/77672125/dd325e6e-c28c-403e-a2de-452c23fab0d4" width="476" height="410"/>
+
+#### 게시글 상세
+<img src="https://github.com/namdongyun/board/assets/77672125/f02dd7f8-95a0-483d-adea-7c263b4ba053" width="476" height="410"/>
+
+#### 실시간 채팅
+<img src="https://github.com/namdongyun/board/assets/77672125/ca26a513-fc0f-45cf-81cc-cb5dd45ef253" width="476" height="410"/>
+
+#### 마이페이지
+<img src="https://github.com/namdongyun/board/assets/77672125/ca26a513-fc0f-45cf-81cc-cb5dd45ef253" width="476" height="410"/>
+
+
