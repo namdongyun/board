@@ -10,7 +10,7 @@ Spring과 React를 사용하여 구현한 게시판과 실시간 채팅 기능�
 ## 주요 기능
 
 - **게시판**: 사용자들이 글을 작성하고, 읽고, 댓글을 달 수 있는 기본적인 게시판 기능을 제공합니다.
-- **실시간 채팅**: WebSocket을 활용하여 사용자들이 실시간으로 소통할 수 있는 채팅 기능을 제공합니다.
+- **실시간 채팅**: STOMP를 사용하여 사용자들이 실시간으로 소통할 수 있는 채팅 기능을 제공합니다.
 - **보안**: JWT와 리프레시 토큰을 통해 사용자 인증을 관리하며, 세션을 유지하는 동안 토큰 갱신을 자동으로 진행합니다. [code](https://github.com/namdongyun/board/blob/d905b597a83613060fbbdd241fe2385049c1eb90/src/main/board-react-app/src/axiosInterceptor/api.js#L8-L68)
 
 ## 기술 스택
