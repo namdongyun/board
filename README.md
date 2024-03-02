@@ -34,6 +34,4 @@ Spring과 React를 사용하여 구현한 게시판과 실시간 채팅 기능�
 <img src="https://github.com/namdongyun/board/assets/77672125/ca26a513-fc0f-45cf-81cc-cb5dd45ef253" width="476" height="410"/>
 
 #### 마이페이지
-<img src="https://github.com/namdongyun/board/assets/77672125/ca26a513-fc0f-45cf-81cc-cb5dd45ef253" width="476" height="410"/>
-
-
+<img src="https://github.com/namdongyun/board/assets/77672125/6f0e1f62-256a-4cf5-9273-f33e7a856134" width="476" height="410"/>
